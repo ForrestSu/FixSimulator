@@ -1,0 +1,42 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+repositories {
+    maven {
+    	url "http://repo.maven.apache.org/maven2"
+    }
+    maven {
+    	url "http://repo.maven.apache.org/maven2"
+    }
+    maven {
+    	url "http://repo.marketcetera.org/maven"
+    }
+}
+
+dependencies {
+    // quickfixj
+    compile 'org.quickfixj:quickfixj-core:1.6.2'
+    compile 'org.quickfixj:quickfixj-messages-fix42:1.6.2'
+    runtime 'org.apache.mina:mina-core:2.0.13'
+    // logging
+    compile 'org.slf4j:slf4j-api:1.7.18'
+    runtime 'org.apache.logging.log4j:log4j-api:2.6.1'
+    runtime 'org.apache.logging.log4j:log4j-core:2.6.1'
+    runtime 'org.apache.logging.log4j:log4j-slf4j-impl:2.6.1'
+    //compile 'org.springframework:spring-core:4.2.5.RELEASE'
+    //compile 'org.springframework:spring-context:4.2.5.RELEASE'
+    // testing
+    testCompile 'junit:junit:4.12'
+}
+
+version = '0.1'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'FIXBro',
+                   'Implementation-Version': version
+    }
+}
+
+// Launchers
+

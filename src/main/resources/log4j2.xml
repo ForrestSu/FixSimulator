@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <!--define some reference-->
+	<Properties>
+	    <!--%p level-->
+	    <property name="logfmt_std">%d %-5p [%t] %C{1}.%M - %m%n</property>
+	    <property name="logfmt_simple">%d{yyyy/MM/dd HH:mm:ss} [%t] %m%n</property>
+	    
+	    <property name="LOGHOME">logs</property>
+	    <property name="LOGFile">fixsim</property>
+	</Properties>
+	<Appenders>
+	    <!--
+		<File name="FIXREP" fileName="logs/fixrep.log" append="false">
+			<PatternLayout pattern="%t %-5p %C{2} - %m%n" />
+		</File> 
+		-->
+		<File name="ToFILE" fileName="${LOGHOME}/${LOGFile}-console.log" append="true">
+			<PatternLayout pattern="${logfmt_std}" />
+		</File>
+		<!--日志分文件-->
+		<!--记录级别>=error的日志-->
+		<RollingRandomAccessFile name="FIXSIM_ERROR"  
+            fileName="${LOGHOME}/${LOGFile}-error.log"  
+            filePattern="${LOGHOME}/${LOGFile}-error_%d{yyyy-MM-dd}-%i.log"  append="true">  
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${logfmt_std}" />  
+            <Policies>  
+                <TimeBasedTriggeringPolicy interval="1"/>  
+                <SizeBasedTriggeringPolicy size="100 MB" />  
+            </Policies>  
+            <DefaultRolloverStrategy max="50" />  
+        </RollingRandomAccessFile> 
+        <!--记录日志-->
+		<RollingRandomAccessFile name="FIXSIM"  
+            fileName="${LOGHOME}/${LOGFile}.log"  
+            filePattern="${LOGHOME}/${LOGFile}_%d{yyyy-MM-dd}-%i.log" append="true">  
+            <PatternLayout pattern="${logfmt_std}" />  
+            <Policies>  
+                <TimeBasedTriggeringPolicy interval="1" />  
+                <SizeBasedTriggeringPolicy size="100 MB" />  
+            </Policies>  
+            <DefaultRolloverStrategy max="50" />  
+        </RollingRandomAccessFile>
+        <!--将输出到文件的提示信息打印到Console-->
+        <Console name="ToConsole" target="SYSTEM_OUT">
+		   <PatternLayout pattern="${logfmt_simple}" />
+		</Console>
+		<!--文件日志采用异步方式
+        <Async name="AsyncFIXREP">  
+            <AppenderRef ref="FIXREP" />  
+        </Async>
+        -->
+	</Appenders>
+	<Loggers>
+		<!--提示：(1)将level改为debug可以记录更详细的日志 -->
+		<!--     (2)配置多个日志输出器Appender         -->
+		<Logger name="HINT" level="info" additivity="false">
+		   <AppenderRef ref="ToConsole" />
+		   <AppenderRef ref="ToFILE" />
+		</Logger>
+		<Logger name="com.embosfer.fixbro" level="debug" additivity="false">
+		    <AppenderRef ref="ToConsole" />
+		    <AppenderRef ref="FIXSIM_ERROR" />
+			<AppenderRef ref="FIXSIM" />
+		</Logger>
+		<Root level="info">
+		    <AppenderRef ref="ToConsole" />
+		    <AppenderRef ref="ToFILE" />
+		</Root>
+	</Loggers>
+</Configuration>
