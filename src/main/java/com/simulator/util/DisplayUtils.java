@@ -1,4 +1,4 @@
-package com.simulator.view;
+package com.simulator.util;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.Pane;

@@ -1,4 +1,4 @@
-package com.simulator.controller.qfj;
+﻿package com.simulator.controller.qfj;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +45,9 @@ public class QFJApplicationIn extends quickfix.fix42.MessageCracker implements q
 			throws FieldNotFound, IncorrectDataFormat, IncorrectTagValue, RejectLogon {
 		  String type = msg.getHeader().getString(MsgType.FIELD);
 		  if(type.equals(Logon.MSGTYPE))
-		    logger.info("session {} ��½!",sessionID); 
+		    logger.info("session {} 登陆!",sessionID); 
 		  else if (type.equals(Logout.MSGTYPE))
-			logger.info("session {} �˳���½!",sessionID); 
+			logger.info("session {} 退出登录!",sessionID); 
 		  else
 			logger.debug("fromAdmin on session {}. Msg {}", sessionID, msg);
 	}
@@ -85,7 +85,7 @@ public class QFJApplicationIn extends quickfix.fix42.MessageCracker implements q
 	public void toApp(Message msg, SessionID sessionID) throws DoNotSend {
 		logger.info("toApp on session {}. Msg {}", sessionID, msg);
 	}
-    //1 �¶���
+    //1 new order
 	@Override 
 	public void onMessage(quickfix.fix42.NewOrderSingle qfjNos, SessionID sessionID)
 			throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
@@ -108,7 +108,7 @@ public class QFJApplicationIn extends quickfix.fix42.MessageCracker implements q
 		logger.info("Transformed {}", nos);
 		messageSender.sendNewOrderSingle(nos);
 	}
-    //2 ��������
+    //2 cancel order
 	@Override
 	public void onMessage(quickfix.fix42.OrderCancelRequest qfjOcr, SessionID sessionID)
 			throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {

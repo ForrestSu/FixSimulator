@@ -4,6 +4,7 @@ import java.util.concurrent.Executor;
 
 import com.simulator.controller.OrderController;
 import com.simulator.model.state.OrderBean;
+import com.simulator.util.DisplayUtils;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.HPos;

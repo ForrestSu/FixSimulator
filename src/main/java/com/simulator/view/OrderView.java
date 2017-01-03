@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 
 import com.simulator.controller.OrderController;
 import com.simulator.model.state.OrderBean;
+import com.simulator.util.DisplayUtils;
 
 import javafx.application.Application;
 import javafx.scene.Node;

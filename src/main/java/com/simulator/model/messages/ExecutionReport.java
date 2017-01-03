@@ -71,7 +71,7 @@ public class ExecutionReport {
 		this.ordStatus = builder.order.getOrdStatus();
 
 		// non mandatory: prevent filling them with null values
-		if (this.execType == ExecType.TRADE) {
+		if ((this.execType == ExecType.PARTIALLY_FILLED) || (this.execType==ExecType.FILLED) ) {
 			this.lastQty = builder.lastQty;
 			this.lastPx = builder.lastPx;
 		}
