@@ -30,6 +30,7 @@ public class OrderBean implements Order {
 	private StringProperty ordStatus;
 	private StringProperty ordType; //TAG35
 	private StringProperty side;
+	private StringProperty Text;
 	private ExecType ordStatusEnum;
 	private OrdType ordTypeEnum;
 	private Side sideEnum;
@@ -199,6 +200,16 @@ public class OrderBean implements Order {
 	public DoubleProperty getLeavesProperty() {
 		return leavesQty;
 	}
+	
+	@Override
+	public String getText() {
+		if(Text==null) return "null";
+		else return Text.get();
+	}
+	//用于界面展示
+	public StringProperty getTextProperty() {
+		return Text;
+	}
 	 ////////////////set Method ///////////////
 	@Override
 	public void setMsgType(String msgtype) {
@@ -316,5 +327,12 @@ public class OrderBean implements Order {
 			targetCompID = new SimpleStringProperty(this, "targetCompID");
 		this.targetCompID.set(targetCID);
 	}
-	
+
+	@Override
+	public void setText(String stext) {
+		if (Text == null)
+			Text = new SimpleStringProperty(this, "Text");
+		this.Text.set(stext); 
+	}
+
 }

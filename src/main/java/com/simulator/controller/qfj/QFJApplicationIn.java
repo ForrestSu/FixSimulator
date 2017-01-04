@@ -108,7 +108,7 @@ public class QFJApplicationIn extends quickfix.fix42.MessageCracker implements q
 		//买卖方向为枚举类型
 		order.setSide(com.simulator.model.tags.Side.valueOf(message.getSide().getValue()));
 		order.setSymbol(message.getSymbol().getValue());
-		
+		order.setText(message.getText().getValue());
 		/*
 		 * 将这笔委托显示在界面上
 		 */
@@ -133,6 +133,7 @@ public class QFJApplicationIn extends quickfix.fix42.MessageCracker implements q
 		//买卖方向为枚举类型
 		order.setSide(com.simulator.model.tags.Side.valueOf(message.getSide().getValue()));
 		order.setSymbol(message.getSymbol().getValue());
+		order.setText(message.getText().getValue());
 		/*
 		 * 将这笔委托显示在界面上
 		 */

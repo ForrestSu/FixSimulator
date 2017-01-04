@@ -27,6 +27,7 @@ import quickfix.field.SenderCompID;
 import quickfix.field.Side;
 import quickfix.field.Symbol;
 import quickfix.field.TargetCompID;
+import quickfix.field.Text;
 import quickfix.field.TransactTime;
 
 /**
@@ -55,9 +56,11 @@ public class QFJApplicationOut implements ExecutionReportObserver {
 		orderER.set(new LeavesQty(er.getLeavesQty()));
 		orderER.set(new Side(er.getOrder().getSide().toChar()));
 		orderER.set(new Symbol(er.getOrder().getSymbol()));
+		orderER.set(new Text(er.getText()));
 		//执行类型TAG20 置为0
 		orderER.set(new ExecTransType('0'));
 		orderER.set(new TransactTime());//这里默认是当前日期
+		
 		//如果是成交
 		if ( (er.getExecType() == com.simulator.model.tags.ExecType.PARTIALLY_FILLED)||
 			 (er.getExecType() == com.simulator.model.tags.ExecType.FILLED)

@@ -37,4 +37,6 @@ public interface ReadOrder {
 	double getCumQty();
 	
 	double getLeavesQty();
+	
+	String getText();
 }

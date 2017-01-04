@@ -89,24 +89,29 @@ public class OrderView extends Application {
 		});
 		
 		//订单拒绝
-		Button buttonRejct = new Button("拒绝");
+		Button buttonRejct = new Button("废单/拒绝");
 		buttonRejct.setOnAction(event -> {
 			OrderBean selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-			controller.pendingNew(selectedOrder);
+			controller.reject(selectedOrder, "simulator reject!");
 		});
 		
         //订单成交
 		Button buttonExecute = new Button("成交");
 		buttonExecute.setOnAction(event -> {
+			//弹出一个框
+			if (executeOrderStage == null) {
+				executeOrderStage = new ExecuteOrderStage(controller, backgroundExecutor);
+			}
 			OrderBean selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-			createOrShowExecuteWindow(selectedOrder.getOrderID());
+			executeOrderStage.setTargetOrder(selectedOrder);
+			executeOrderStage.show();
 		});
 		
-	    //撤单废单
-		Button buttonCancelReject = new Button("撤单废单");
+	    //撤单成交
+		Button buttonCancelReject = new Button("撤单成交");
 		buttonCancelReject.setOnAction(event -> {
 			OrderBean selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-			controller.pendingNew(selectedOrder);
+			controller.cancel(selectedOrder);
 		});
 		
 		//清空所有订单
@@ -120,20 +125,12 @@ public class OrderView extends Application {
 
 		return hbox;
 	}
-
+	
+    //按钮不可用
 	private void disableIfNoSelection(Button... buttons) {
 		for (Button button : buttons) {
 			button.disableProperty().bind(orderTableView.getSelectionModel().selectedItemProperty().isNull());
 		}
-	}
-    // 显示一个窗体，并发送执行报告
-	private void createOrShowExecuteWindow(String orderID) {
-		if (executeOrderStage == null) {
-			executeOrderStage = new ExecuteOrderStage(controller, backgroundExecutor);
-		}
-		OrderBean order = orderTableView.getSelectionModel().getSelectedItem();
-		executeOrderStage.setTargetOrder(order);
-		executeOrderStage.show();
 	}
 
 }

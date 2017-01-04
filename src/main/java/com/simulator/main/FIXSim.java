@@ -11,6 +11,12 @@ import com.simulator.controller.er.processor.ExecutionReportProcessorImpl;
 import com.simulator.controller.qfj.QFJAcceptor;
 import com.simulator.controller.qfj.QFJApplicationIn;
 import com.simulator.controller.qfj.QFJApplicationOut;
+import com.simulator.model.state.Order;
+import com.simulator.model.state.OrderBean;
+import com.simulator.model.state.OrderBook;
+import com.simulator.model.tags.ExecType;
+import com.simulator.model.tags.OrdType;
+import com.simulator.model.tags.Side;
 import com.simulator.view.OrderView;
 
 import javafx.application.Application;
@@ -45,25 +51,30 @@ public class FIXSim extends Application {
 	}
 
 	public static void main(String[] args) {
-		// TEST DATA
+		// launch JavaFX
+		launch(args);
+	}
+    private void AddTestData(){
+    	// TEST DATA
 		// add some fake orders into the order book
-		// Order order1 = new OrderBean();
-		// order1.setAvgPx(0D);
-		// order1.setClOrdID("1234");
-		// order1.setCumQty(0D);
-		// order1.setLeavesQty(1000D);
-		// order1.setOrderID("myOrderID");
-		// order1.setOrdType(OrdType.LIMIT);
-		// order1.setOrdStatus(OrdStatus.PENDING_NEW);
-		// order1.setOrigClOrdID("orig1234");
-		// order1.setPrice(1.35D);
-		// order1.setQty(1000D);
-		// order1.setSide(Side.BUY);
-		// order1.setSymbol("EUR/USD");
-		// order1.setSenderCompID("BANZAI");
-		// order1.setTargetCompID("FIXB");
-		// OrderBook.getInstance().addOrder(order1);
-		//
+		 Order order1 = new OrderBean();
+		 order1.setMsgType("D");
+		 order1.setAvgPx(0D);
+		 order1.setClOrdID("1234");
+		 order1.setCumQty(0D);
+		 order1.setLeavesQty(1000D);
+		 order1.setOrderID("E1234");
+		 order1.setOrdType(OrdType.LIMIT);
+		 order1.setOrdStatus(ExecType.NONE_YET);
+		 order1.setOrigClOrdID("orig1234");
+		 order1.setPrice(1.35D);
+		 order1.setQty(1000D);
+		 order1.setSide(Side.BUY);
+		 order1.setSymbol("EUR/USD");
+		 order1.setSenderCompID("BANZAI");
+		 order1.setTargetCompID("FIXB");
+		 OrderBook.getInstance().addOrder(order1);
+		 
 		// Order order2 = new OrderBean();
 		// order2.setAvgPx(0D);
 		// order2.setClOrdID("1235");
@@ -79,15 +90,12 @@ public class FIXSim extends Application {
 		// order2.setSenderCompID("BANZAI2");
 		// order2.setTargetCompID("FIXB");
 		// OrderBook.getInstance().addOrder(order2);
-
-		// launch JavaFX
-		launch(args);
-	}
-
+    }
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		acceptor.start(); // start accepting connections
 		view.start(primaryStage);
+		AddTestData();
 	}
 
 	@Override

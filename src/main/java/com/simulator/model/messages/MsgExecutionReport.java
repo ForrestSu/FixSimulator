@@ -24,6 +24,7 @@ public class MsgExecutionReport {
 	private final double avgPx;
 	private final double cumQty;
 	private final double leavesQty;
+	private final String Text;
 
 	// non mandatory
 	private Double lastQty;
@@ -65,7 +66,8 @@ public class MsgExecutionReport {
 		this.execType = builder.order.getOrdStatus();
 		this.leavesQty = builder.order.getLeavesQty();
 		this.ordStatus = builder.order.getOrdStatus(); //same as ExecType 
-
+        this.Text = builder.order.getText();
+        
 		// non mandatory: prevent filling them with null values
 		if ((this.execType == ExecType.PARTIALLY_FILLED) || (this.execType==ExecType.FILLED) ) {
 			this.lastQty = builder.lastQty;
@@ -111,6 +113,9 @@ public class MsgExecutionReport {
 
 	public String getClOrdID() {
 		return clOrdID;
+	}
+	public String getText() {
+		return Text;
 	}
 
 	@Override

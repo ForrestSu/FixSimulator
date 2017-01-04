@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.simulator.controller.er.processor.ExecutionReportProcessor;
-import com.simulator.controller.er.producer.ExecuteOrderImp;
-import com.simulator.controller.er.producer.ComfirmOrderImp;
-import com.simulator.controller.er.producer.ExecReportProducerInterf;
-import com.simulator.controller.er.producer.PendingNewOrderImp;
+import com.simulator.controller.er.producer.*;
 import com.simulator.model.messages.MsgExecutionReport;
 import com.simulator.model.state.Order;
 
@@ -42,14 +39,15 @@ public class OrderControllerImpl implements OrderController {
     //订单拒绝 
 	@Override
 	public void reject(Order order, String reason) {
-		// TODO Auto-generated method stub
-
+		logger.info("To Comfirm order {}", order.getOrderID());
+		DoOrderExecutionReport(new RejectOrderImp(order,reason));
 	}
-
+    //撤单成交，注意数量
 	@Override
-	public void cancel(Order order, String reason) {
+	public void cancel(Order order) {
 		// TODO Auto-generated method stub
-
+		logger.info("To Canceled order {}", order.getOrderID());
+		DoOrderExecutionReport(new CancelAckOrderImp(order));
 	}
 
 	@Override

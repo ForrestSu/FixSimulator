@@ -14,7 +14,7 @@ public interface OrderController {
 
 	public void reject(Order order, String reason);
 
-	public void cancel(Order order, String reason);
+	public void cancel(Order order);
 
 	public void doneForDay(Order order);
 

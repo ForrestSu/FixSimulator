@@ -42,4 +42,6 @@ public interface Order extends ReadOrder {
 	void setCumQty(double cumQty);
 
 	void setLeavesQty(double leavesQty);
+	
+	void setText(String text);
 }
