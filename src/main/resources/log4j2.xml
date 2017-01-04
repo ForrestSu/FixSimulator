@@ -59,7 +59,7 @@
 		   <AppenderRef ref="ToConsole" />
 		   <AppenderRef ref="ToFILE" />
 		</Logger>
-		<Logger name="com.embosfer.fixbro" level="debug" additivity="false">
+		<Logger name="com.simulator" level="info" additivity="false">
 		    <AppenderRef ref="ToConsole" />
 		    <AppenderRef ref="FIXSIM_ERROR" />
 			<AppenderRef ref="FIXSIM" />

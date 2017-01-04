@@ -43,7 +43,7 @@ public class ExecuteOrderStage extends Stage {
 		grid.setVgap(10D);
 
 		// last qty
-		Label lblQty = new Label("Last qty");
+		Label lblQty = new Label("成交数量");
 		lblQty.setTextFill(Color.WHITE);
 		GridPane.setHalignment(lblQty, HPos.RIGHT);
 		grid.add(lblQty, 0, 0);
@@ -54,7 +54,7 @@ public class ExecuteOrderStage extends Stage {
 		grid.add(txtLastQty, 1, 0);
 
 		// last price
-		Label lblPx = new Label("Last px");
+		Label lblPx = new Label("成交价格");
 		lblPx.setTextFill(Color.WHITE);
 		grid.add(lblPx, 0, 1);
 		GridPane.setHalignment(lblPx, HPos.RIGHT);

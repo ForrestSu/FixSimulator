@@ -1,8 +1,7 @@
 package com.simulator.model.messages;
 
-import com.simulator.model.state.ReadOnlyOrder;
+import com.simulator.model.state.ReadOrder;
 import com.simulator.model.tags.ExecType;
-import com.simulator.model.tags.OrdStatus;
 
 /**
  * Immutable class. This execution structure is based on the structure
@@ -14,14 +13,14 @@ import com.simulator.model.tags.OrdStatus;
  * @author sunquan
  *
  */
-public class ExecutionReport {
+public class MsgExecutionReport {
 
-	private final ReadOnlyOrder order;
+	private final ReadOrder order;
 
 	private final String clOrdID;
 	private final String execID;
 	private final ExecType execType;
-	private final OrdStatus ordStatus;
+	private final ExecType ordStatus;
 	private final double avgPx;
 	private final double cumQty;
 	private final double leavesQty;
@@ -32,15 +31,12 @@ public class ExecutionReport {
 
 	public static class Builder {
 		// mandatory fields
-		private final ReadOnlyOrder order;
-		private ExecType execType;
-
+		private final ReadOrder order;
 		// optional fields
 		private double lastQty;
 		private double lastPx;
 
-		public Builder(ExecType execType, ReadOnlyOrder order) {
-			this.execType = execType;
+		public Builder( ReadOrder order) {
 			this.order = order;
 		}
 
@@ -54,21 +50,21 @@ public class ExecutionReport {
 			return this;
 		}
 
-		public ExecutionReport build() {
-			return new ExecutionReport(this);
+		public MsgExecutionReport build() {
+			return new MsgExecutionReport(this);
 		}
 
 	}
 
-	private ExecutionReport(Builder builder) {
+	private MsgExecutionReport(Builder builder) {
 		this.clOrdID = builder.order.getClOrdID();
 		this.execID = "E" + System.currentTimeMillis(); // ensure unicity
 		this.order = builder.order;
 		this.avgPx = builder.order.getAvgPx();
 		this.cumQty = builder.order.getCumQty();
-		this.execType = builder.execType;
+		this.execType = builder.order.getOrdStatus();
 		this.leavesQty = builder.order.getLeavesQty();
-		this.ordStatus = builder.order.getOrdStatus();
+		this.ordStatus = builder.order.getOrdStatus(); //same as ExecType 
 
 		// non mandatory: prevent filling them with null values
 		if ((this.execType == ExecType.PARTIALLY_FILLED) || (this.execType==ExecType.FILLED) ) {
@@ -105,11 +101,11 @@ public class ExecutionReport {
 		return leavesQty;
 	}
 
-	public ReadOnlyOrder getOrder() {
+	public ReadOrder getOrder() {
 		return order;
 	}
 
-	public OrdStatus getOrdStatus() {
+	public ExecType getOrdStatus() {
 		return ordStatus;
 	}
 

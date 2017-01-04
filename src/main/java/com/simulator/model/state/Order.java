@@ -1,6 +1,6 @@
 package com.simulator.model.state;
 
-import com.simulator.model.tags.OrdStatus;
+import com.simulator.model.tags.ExecType;
 import com.simulator.model.tags.OrdType;
 import com.simulator.model.tags.Side;
 
@@ -10,8 +10,9 @@ import com.simulator.model.tags.Side;
  * @author sunquan
  *
  */
-public interface Order extends ReadOnlyOrder {
-
+public interface Order extends ReadOrder {
+	void setMsgType(String msgType);
+	
 	void setSenderCompID(String senderCompID);
 
 	void setTargetCompID(String targetCompID);
@@ -24,7 +25,7 @@ public interface Order extends ReadOnlyOrder {
 
 	void setSymbol(String symbol);
 
-	void setOrdStatus(OrdStatus status);
+	void setOrdStatus(ExecType status);
 
 	void setTimeInForce(char tif);
 

@@ -1,4 +1,6 @@
-package com.simulator.model.state;
+package com.simulator.model.interf;
+
+import com.simulator.model.state.Order;
 
 /**
  * Listens to order events (new orders coming in, changes requested on the
@@ -14,6 +16,5 @@ public interface OrderObserver {
 	 * 
 	 * @param theNewOrder
 	 */
-	void onNewOrder(Order theNewOrder);
-
+	void onNewOrder(Order NewOrder);
 }

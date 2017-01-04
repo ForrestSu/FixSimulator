@@ -5,10 +5,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.simulator.model.interf.OrderObserver;
 import com.simulator.model.state.Order;
 import com.simulator.model.state.OrderBean;
 import com.simulator.model.state.OrderBook;
-import com.simulator.model.state.OrderObserver;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -28,7 +28,7 @@ import javafx.util.Callback;
 public class OrderBlotter implements OrderObserver {
 
 	private final TableView<OrderBean> tableView;
-	private final ObservableList<OrderBean> observableOrderList;
+	private final ObservableList<OrderBean> observableOrderList; 
 
 	OrderBlotter() {
 		// get all orders and transform them into order beans
@@ -52,16 +52,16 @@ public class OrderBlotter implements OrderObserver {
 
 		observableOrderList = FXCollections.observableList(orderBeans, extractor);
 		observableOrderList.addListener(new InvalidationListener() {
-
+			//表格刷新，重新加载数据
 			@Override
 			public void invalidated(Observable observable) {
-				System.out.println("Invalidated " + observable);
+				System.out.println("Refresh TableView!");
 			}
 		});
 		tableView = new TableView<>(observableOrderList);
 		getTableView().setEditable(false);
 		// With the table defined, we define now the data model: we'll be using
-		// a ObservableList
+		// show Order title
 		createTableColumns();
 		
 		OrderBook.getInstance().registerOrderObserver(this); // listen to order events
@@ -69,45 +69,54 @@ public class OrderBlotter implements OrderObserver {
 
 	@SuppressWarnings("unchecked")
 	private void createTableColumns() {
-		TableColumn<OrderBean, Double> avgPx = new TableColumn<>("avgPx");
+		TableColumn<OrderBean, Double> avgPx = new TableColumn<>("均价");
 		avgPx.setCellValueFactory(cellData -> cellData.getValue().getAvgPxProperty().asObject());
-		TableColumn<OrderBean, String> clOrdID = new TableColumn<>("clOrdID");
+		TableColumn<OrderBean, String> clOrdID = new TableColumn<>("客户订单编号");
 		clOrdID.setCellValueFactory(cellData -> cellData.getValue().getClOrdIDProperty());
-		TableColumn<OrderBean, Double> cumQty = new TableColumn<>("cumQty");
+		TableColumn<OrderBean, Double> cumQty = new TableColumn<>("累积成交数量");
 		cumQty.setCellValueFactory(cellData -> cellData.getValue().getCumQtyProperty().asObject());
-		TableColumn<OrderBean, Double> leavesQty = new TableColumn<>("leavesQty");
+		TableColumn<OrderBean, Double> leavesQty = new TableColumn<>("剩余数量");
 		leavesQty.setCellValueFactory(cellData -> cellData.getValue().getLeavesProperty().asObject());
-		TableColumn<OrderBean, String> orderID = new TableColumn<>("orderID");
+		TableColumn<OrderBean, String> orderID = new TableColumn<>("订单编号");
 		orderID.setCellValueFactory(cellData -> cellData.getValue().getIDProperty());
-		TableColumn<OrderBean, String> ordStatus = new TableColumn<>("ordStatus");
+		TableColumn<OrderBean, String> ordStatus = new TableColumn<>("委托状态");
 		ordStatus.setCellValueFactory(cellData -> cellData.getValue().getOrdStatusProperty());
-		TableColumn<OrderBean, String> ordType = new TableColumn<>("ordType");
+		TableColumn<OrderBean, String> ordType = new TableColumn<>("订单类型");
 		ordType.setCellValueFactory(cellData -> cellData.getValue().getOrdTypeProperty());
-		TableColumn<OrderBean, String> origClOrdID = new TableColumn<>("origClOrdID");
+		TableColumn<OrderBean, String> origClOrdID = new TableColumn<>("原客户订单编号");
 		origClOrdID.setCellValueFactory(cellData -> cellData.getValue().getOrigClOrdIDProperty());
-		TableColumn<OrderBean, String> price = new TableColumn<>("price");
+		TableColumn<OrderBean, String> price = new TableColumn<>("价格");
 		price.setCellValueFactory(cellData -> cellData.getValue().getPriceProperty());
-		TableColumn<OrderBean, String> side = new TableColumn<>("side");
+		TableColumn<OrderBean, String> side = new TableColumn<>("买卖方向");
 		side.setCellValueFactory(cellData -> cellData.getValue().getSideProperty());
 		TableColumn<OrderBean, String> symbol = new TableColumn<>("symbol");
 		symbol.setCellValueFactory(cellData -> cellData.getValue().getSymbolProperty());
-		TableColumn<OrderBean, String> senderCompID = new TableColumn<>("senderCompID");
+		TableColumn<OrderBean, String> senderCompID = new TableColumn<>("发送发ID");
 		senderCompID.setCellValueFactory(cellData -> cellData.getValue().getSenderCompIDProperty());
-		TableColumn<OrderBean, String> targetCompID = new TableColumn<>("targetCompID");
+		TableColumn<OrderBean, String> targetCompID = new TableColumn<>("接收方ID");
 		targetCompID.setCellValueFactory(cellData -> cellData.getValue().getTargetCompIDProperty());
+		
+		TableColumn<OrderBean, String> MsgType = new TableColumn<>("消息类型");//msgType
+		MsgType.setCellValueFactory(cellData -> cellData.getValue().getMsgTypeProperty());
 		// TODO fill all values
-
-		getTableView().getColumns().setAll(orderID, symbol, ordType, price, side, ordStatus, leavesQty, cumQty, avgPx,
-				origClOrdID, clOrdID, senderCompID, targetCompID);
+		
+		getTableView().getColumns().setAll(orderID,MsgType, symbol, ordType, price, side, ordStatus, leavesQty, cumQty, avgPx,
+				clOrdID, origClOrdID, senderCompID, targetCompID);
 	}
 
 	public TableView<OrderBean> getTableView() {
 		return tableView;
 	}
-
+	
+	//新订单
 	@Override
-	public void onNewOrder(Order order) {
-		observableOrderList.add(new OrderBean(order));
+	public void onNewOrder(Order Neworder) {
+		observableOrderList.add(new OrderBean(Neworder));
+	}
+	
+	//清空所有委托
+	public void ClearAllOrders() {
+		observableOrderList.clear();
 	}
 
 }

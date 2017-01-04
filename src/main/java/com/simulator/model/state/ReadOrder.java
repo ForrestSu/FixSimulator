@@ -1,11 +1,13 @@
 package com.simulator.model.state;
 
-import com.simulator.model.tags.OrdStatus;
+import com.simulator.model.tags.ExecType;
 import com.simulator.model.tags.OrdType;
 import com.simulator.model.tags.Side;
 
-public interface ReadOnlyOrder {
+public interface ReadOrder {
 
+	String getMsgType();
+	
 	String getSenderCompID();
 
 	String getTargetCompID();
@@ -18,7 +20,7 @@ public interface ReadOnlyOrder {
 
 	String getSymbol();
 
-	OrdStatus getOrdStatus();
+	ExecType getOrdStatus();
 
 	char getTimeInForce();
 

@@ -23,7 +23,7 @@ public interface OrderController {
 	public void replace(Order order);
 
 	public void acknowledge(Order order);
-
+		
 	public void pendingNew(Order order);
 
 	public void pendingCancel(Order order);

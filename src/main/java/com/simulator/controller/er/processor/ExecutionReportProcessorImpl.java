@@ -9,18 +9,18 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.simulator.controller.er.observer.ExecutionReportObservable;
+import com.simulator.controller.er.observer.ExecutionReportSubject;
 import com.simulator.controller.er.observer.ExecutionReportObserver;
-import com.simulator.model.messages.ExecutionReport;
+import com.simulator.model.messages.MsgExecutionReport;
 
 /**
- * Distributes the {@link ExecutionReport}s produced by FIXBro to all
+ * Distributes the {@link MsgExecutionReport}s produced by FIXBro to all
  * {@link ExecutionReportObserver}s
  * 
  * @author sunquan
  *
  */
-public class ExecutionReportProcessorImpl implements ExecutionReportProcessor, ExecutionReportObservable {
+public class ExecutionReportProcessorImpl implements ExecutionReportProcessor, ExecutionReportSubject {
 	
 	private final Logger log = LoggerFactory.getLogger(ExecutionReportProcessorImpl.class);
 
@@ -33,9 +33,9 @@ public class ExecutionReportProcessorImpl implements ExecutionReportProcessor, E
 	}
 
 	@Override
-	public void process(ExecutionReport er) {
+	public void process(MsgExecutionReport er) {
 		erObserverList.forEach(observer -> {
-			log.info("Sending {}", er);
+			log.info("ExecutionReport {}", er);
 			executorService.execute(() -> observer.onExecutionReport(er));
 		});
 	}

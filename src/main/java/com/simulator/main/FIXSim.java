@@ -11,8 +11,6 @@ import com.simulator.controller.er.processor.ExecutionReportProcessorImpl;
 import com.simulator.controller.qfj.QFJAcceptor;
 import com.simulator.controller.qfj.QFJApplicationIn;
 import com.simulator.controller.qfj.QFJApplicationOut;
-import com.simulator.controller.sender.ProcessNewOrder;
-import com.simulator.controller.sender.MessageSender;
 import com.simulator.view.OrderView;
 
 import javafx.application.Application;
@@ -37,12 +35,12 @@ public class FIXSim extends Application {
 	
 	public FIXSim() throws ConfigError {
 		// sending strategy: directly
-		MessageSender directSender = new ProcessNewOrder();
-		acceptor = new QFJAcceptor(CONFIGURE_FILE, new QFJApplicationIn(directSender));
+		acceptor = new QFJAcceptor(CONFIGURE_FILE, new QFJApplicationIn());
 		
 		List<ExecutionReportObserver> erObservers = Arrays.asList(new QFJApplicationOut());
 		ExecutionReportProcessor erProcessor = new ExecutionReportProcessorImpl(erObservers);
 		OrderController controller = new OrderControllerImpl(erProcessor);
+		
 		view = new OrderView(controller);
 	}
 

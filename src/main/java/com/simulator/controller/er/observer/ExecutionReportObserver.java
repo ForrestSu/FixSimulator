@@ -1,16 +1,16 @@
 package com.simulator.controller.er.observer;
 
-import com.simulator.model.messages.ExecutionReport;
+import com.simulator.model.messages.MsgExecutionReport;
 
 /**
  * Implementors will be called back whenever FIXBro produces an
- * {@link ExecutionReport}
+ * {@link MsgExecutionReport}
  * 
  * @author sunquan
  *
  */
 public interface ExecutionReportObserver {
 
-	void onExecutionReport(ExecutionReport er);
+	public boolean onExecutionReport(MsgExecutionReport er);
 
 }

@@ -1,6 +1,6 @@
 package com.simulator.model.state;
 
-import com.simulator.model.tags.OrdStatus;
+import com.simulator.model.tags.ExecType;
 import com.simulator.model.tags.OrdType;
 import com.simulator.model.tags.Side;
 
@@ -23,13 +23,14 @@ public class OrderBean implements Order {
 	private StringProperty origClOrdID;
 	private StringProperty clOrdID;
 	private StringProperty symbol;
+	private StringProperty msgType;
 	private DoubleProperty leavesQty;
 	private DoubleProperty cumQty;
 	private DoubleProperty avgPx;
 	private StringProperty ordStatus;
-	private StringProperty ordType;
+	private StringProperty ordType; //TAG35
 	private StringProperty side;
-	private OrdStatus ordStatusEnum;
+	private ExecType ordStatusEnum;
 	private OrdType ordTypeEnum;
 	private Side sideEnum;
 
@@ -39,11 +40,12 @@ public class OrderBean implements Order {
 	public OrderBean() {
 		setAvgPx(0);
 		setCumQty(0);
-		setOrdStatus(OrdStatus.NONE_YET);
+		setOrdStatus(ExecType.NONE_YET);
 		setOrderID("O" + System.nanoTime());
 	}
 
 	public OrderBean(Order from) {
+		setMsgType(from.getMsgType());
 		setAvgPx(from.getAvgPx());
 		setClOrdID(from.getClOrdID());
 		setCumQty(from.getCumQty());
@@ -60,7 +62,15 @@ public class OrderBean implements Order {
 		setSenderCompID(from.getSenderCompID());
 		setTargetCompID(from.getTargetCompID());
 	}
-
+	
+	@Override
+	public String getMsgType() {
+		return msgType.get();
+	}
+	//用于界面展示
+	public StringProperty getMsgTypeProperty() {
+		return msgType;
+	}
 	@Override
 	public String getSenderCompID() {
 		return senderCompID.get();
@@ -116,7 +126,7 @@ public class OrderBean implements Order {
 	}
 
 	@Override
-	public OrdStatus getOrdStatus() {
+	public ExecType getOrdStatus() {
 		return ordStatusEnum;
 	}
 
@@ -189,7 +199,15 @@ public class OrderBean implements Order {
 	public DoubleProperty getLeavesProperty() {
 		return leavesQty;
 	}
-
+	 ////////////////set Method ///////////////
+	@Override
+	public void setMsgType(String msgtype) {
+		//首次初始化
+		if (msgType == null)
+			msgType = new SimpleStringProperty(this, "msgType"); 
+		this.msgType.set(msgtype);   
+	}
+	
 	@Override
 	public void setOrderID(String ID) {
 		if (orderID == null)
@@ -219,7 +237,7 @@ public class OrderBean implements Order {
 	}
 
 	@Override
-	public void setOrdStatus(OrdStatus status) {
+	public void setOrdStatus(ExecType status) {
 		this.ordStatusEnum = status;
 		if (ordStatus == null)
 			ordStatus = new SimpleStringProperty(this, "ordStatus");
@@ -245,7 +263,9 @@ public class OrderBean implements Order {
 		this.ordTypeEnum = type;
 		if (ordType == null)
 			ordType = new SimpleStringProperty(this, "ordType");
-		this.ordType.set(type.toString());
+		//撤单委托没有订单类型
+		if(type != null)
+		  this.ordType.set(type.toString());
 	}
 
 	@Override
@@ -272,14 +292,14 @@ public class OrderBean implements Order {
 	@Override
 	public void setCumQty(double cum) {
 		if (cumQty == null)
-			cumQty = new SimpleDoubleProperty(this, "clOrdID");
+			cumQty = new SimpleDoubleProperty(this, "累积成交数量");
 		this.cumQty.set(cum);
 	}
 
 	@Override
 	public void setLeavesQty(double lvsQty) {
 		if (leavesQty == null)
-			leavesQty = new SimpleDoubleProperty(this, "leavesQty");
+			leavesQty = new SimpleDoubleProperty(this, "剩余数量");
 		leavesQty.set(lvsQty);
 	}
 
@@ -296,5 +316,5 @@ public class OrderBean implements Order {
 			targetCompID = new SimpleStringProperty(this, "targetCompID");
 		this.targetCompID.set(targetCID);
 	}
-
+	
 }

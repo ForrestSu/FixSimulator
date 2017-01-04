@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.simulator.model.interf.OrderObservable;
+import com.simulator.model.interf.OrderObserver;
+
 /**
  * Singleton keeping the orders in the system
  * 
@@ -17,13 +20,11 @@ public class OrderBook implements OrderObservable {
 	private static final OrderBook instance = new OrderBook();
 	
 	private final Map<String, Order> ordersByID;
-//	private final Map<String, List<Order>> historyByOrder;
-	private final List<OrderObserver> observers;
+	private final List<OrderObserver> observers; //
 
 	private OrderBook() {
 		ordersByID = new ConcurrentHashMap<>();
 		observers = new CopyOnWriteArrayList<>();
-//		historyByOrder = new ConcurrentHashMap<>();
 	}
 
 	public static OrderBook getInstance() {
@@ -42,12 +43,12 @@ public class OrderBook implements OrderObservable {
 	public Collection<Order> getAllOrders() {
 		return ordersByID.values();
 	}
-
+    
 	@Override
 	public void registerOrderObserver(OrderObserver observer) {
 		observers.add(observer);
 	}
-
+    
 	@Override
 	public void unRegisterOrderObserver(OrderObserver observer) {
 		// TODO Auto-generated method stub

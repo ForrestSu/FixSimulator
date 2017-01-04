@@ -4,10 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.simulator.controller.er.processor.ExecutionReportProcessor;
-import com.simulator.controller.er.producer.ExecuteOrder;
-import com.simulator.controller.er.producer.ExecutionReportProducer;
-import com.simulator.controller.er.producer.PendingNewOrder;
-import com.simulator.model.messages.ExecutionReport;
+import com.simulator.controller.er.producer.ExecuteOrderImp;
+import com.simulator.controller.er.producer.ComfirmOrderImp;
+import com.simulator.controller.er.producer.ExecReportProducerInterf;
+import com.simulator.controller.er.producer.PendingNewOrderImp;
+import com.simulator.model.messages.MsgExecutionReport;
 import com.simulator.model.state.Order;
 
 /**
@@ -18,26 +19,27 @@ import com.simulator.model.state.Order;
  */
 public class OrderControllerImpl implements OrderController {
 
-	private final Logger log = LoggerFactory.getLogger(OrderControllerImpl.class);
+	private final Logger logger = LoggerFactory.getLogger(OrderControllerImpl.class);
 
 	private final ExecutionReportProcessor erProcessor;
 
 	public OrderControllerImpl(ExecutionReportProcessor erProcessor) {
 		this.erProcessor = erProcessor;
 	}
-
-	private void processExecutionReport(ExecutionReportProducer executionProducer) {
-		ExecutionReport er = executionProducer.getExecutionReport();
+    
+	//实际发送执行报告
+	private void DoOrderExecutionReport(ExecReportProducerInterf executionProducer) {
+		MsgExecutionReport er = executionProducer.getExecutionReport();
 		erProcessor.process(er);
 	}
-
+    
+	//执行报告
 	@Override
 	public void execute(Order order, double lastPx, double lastQty) {
-		log.info("Executing order {} with lastPx {} and lastQty {}",
-				new Object[] { order.getOrderID(), lastPx, lastQty });
-		processExecutionReport(new ExecuteOrder(order, lastPx, lastQty));
+		logger.info("Executing order {} with lastPx {} and lastQty {}",order.getOrderID(), lastPx, lastQty);
+		DoOrderExecutionReport(new ExecuteOrderImp(order, lastPx, lastQty));
 	}
-
+    //订单拒绝 
 	@Override
 	public void reject(Order order, String reason) {
 		// TODO Auto-generated method stub
@@ -67,17 +69,18 @@ public class OrderControllerImpl implements OrderController {
 		// TODO Auto-generated method stub
 
 	}
-
+	
+	 //发送委托确认
 	@Override
 	public void acknowledge(Order order) {
-		// TODO Auto-generated method stub
-
+		logger.info("To Comfirm order {}", order.getOrderID());
+		DoOrderExecutionReport(new ComfirmOrderImp(order));
 	}
-
+  
 	@Override
 	public void pendingNew(Order order) {
-		log.info("To Pending New, order {}", order.getOrderID());
-		processExecutionReport(new PendingNewOrder(order));
+		logger.info("To Pending New, order {}", order.getOrderID());
+		DoOrderExecutionReport(new PendingNewOrderImp(order));
 	}
 
 	@Override

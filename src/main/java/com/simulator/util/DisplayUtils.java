@@ -18,4 +18,6 @@ public class DisplayUtils {
 		panel.setStyle("-fx-background-color: #336699;");
 		panel.setPadding(new Insets(10));
 	}
+	
+	
 }

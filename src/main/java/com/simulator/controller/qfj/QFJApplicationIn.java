@@ -3,23 +3,27 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.simulator.controller.sender.MessageSender;
-import com.simulator.model.messages.NewOrderSingle;
+import com.simulator.model.state.Order;
+import com.simulator.model.state.OrderBean;
+import com.simulator.model.state.OrderBook;
+import com.simulator.model.tags.OrdType;
 
 import quickfix.DoNotSend;
 import quickfix.FieldNotFound;
 import quickfix.IncorrectDataFormat;
 import quickfix.IncorrectTagValue;
 import quickfix.Message;
-import quickfix.Message.Header;
 import quickfix.RejectLogon;
 import quickfix.SessionID;
 import quickfix.UnsupportedMessageType;
 import quickfix.field.MsgType;
+import quickfix.field.OrigClOrdID;
 import quickfix.field.SenderCompID;
 import quickfix.field.TargetCompID;
 import quickfix.fix42.Logon;
 import quickfix.fix42.Logout;
+import quickfix.fix42.NewOrderSingle;
+import quickfix.fix42.OrderCancelRequest;
 
 
 /**
@@ -32,11 +36,7 @@ import quickfix.fix42.Logout;
 public class QFJApplicationIn extends quickfix.fix42.MessageCracker implements quickfix.Application {
 
 	private static final Logger logger = LoggerFactory.getLogger(QFJApplicationIn.class);
-	private final MessageSender messageSender;
-
-	public QFJApplicationIn(MessageSender messageSender) {
-		this.messageSender = messageSender;
-	}
+//	private final MessageSender messageSender;
 
 	// callback notifying of every "admin" message (eg. logon,logout, heartbeat)
 	// received from the outside world
@@ -87,32 +87,56 @@ public class QFJApplicationIn extends quickfix.fix42.MessageCracker implements q
 	}
     //1 new order
 	@Override 
-	public void onMessage(quickfix.fix42.NewOrderSingle qfjNos, SessionID sessionID)
+	public void onMessage(NewOrderSingle message, SessionID sessionID)
 			throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
-		logger.info("NewOrderSingle received on session {} => {}", sessionID, qfjNos);
-		NewOrderSingle.Builder builder = new NewOrderSingle.Builder();
-		// mandatory fields
-        Header header = qfjNos.getHeader();
-		builder.senderCompID(header.getField(new SenderCompID()).getValue())
-		       .targetCompID(header.getField(new TargetCompID()).getValue())
-			   .clOrdID(qfjNos.getClOrdID().getValue()).orderQty(qfjNos.getOrderQty().getValue())
-			   .ordType(qfjNos.getOrdType().getValue()).side(qfjNos.getSide().getValue())
-			   .symbol(qfjNos.getSymbol().getValue())
-				//.symbol(qfjNos.getInstrument().getSymbol().getValue()) FIX4.4
-				.transactTime(qfjNos.getTransactTime().getValue());
-
-		// non mandatory fields
-		if (qfjNos.isSetPrice())
-			builder.price(qfjNos.getPrice().getValue());
-		NewOrderSingle nos = builder.build();
-		logger.info("Transformed {}", nos);
-		messageSender.sendNewOrderSingle(nos);
+		logger.info("session {} 收到一笔新订单!", sessionID);
+		//将这笔委托显示在界面上
+		Order order = new OrderBean();
+		order.setMsgType(message.getHeader().getString(MsgType.FIELD));
+		order.setSenderCompID(message.getHeader().getString(SenderCompID.FIELD));
+		order.setTargetCompID(message.getHeader().getString(TargetCompID.FIELD));
+		order.setClOrdID(message.getClOrdID().getValue());
+		order.setLeavesQty(message.getOrderQty().getValue());
+		//订单类型为枚举类型
+		order.setOrdType( OrdType.valueOf( message.getOrdType().getValue() ));
+		//无原始订单编号
+		order.setOrigClOrdID("0");
+		//如果是市价订单,则没有价格
+		if(message.isSetPrice())
+			order.setPrice(message.getPrice().getValue());
+		order.setQty(message.getOrderQty().getValue());
+		//买卖方向为枚举类型
+		order.setSide(com.simulator.model.tags.Side.valueOf(message.getSide().getValue()));
+		order.setSymbol(message.getSymbol().getValue());
+		
+		/*
+		 * 将这笔委托显示在界面上
+		 */
+		OrderBook.getInstance().addOrder(order);  
 	}
     //2 cancel order
 	@Override
-	public void onMessage(quickfix.fix42.OrderCancelRequest qfjOcr, SessionID sessionID)
+	public void onMessage(OrderCancelRequest message, SessionID sessionID)
 			throws FieldNotFound, UnsupportedMessageType, IncorrectTagValue {
-		logger.info("OrderCancelRequest received on session {} => {}", sessionID, qfjOcr);
+		logger.info("session {} 收到一笔撤单!", sessionID);
+		Order order = new OrderBean();
+		order.setMsgType(message.getHeader().getString(MsgType.FIELD));
+		order.setSenderCompID(message.getHeader().getString(SenderCompID.FIELD));
+		order.setTargetCompID(message.getHeader().getString(TargetCompID.FIELD));
+		//订单编号
+		order.setClOrdID(message.getClOrdID().getValue());
+		order.setLeavesQty(message.getOrderQty().getValue());
+		//原始订单编号
+		order.setOrigClOrdID(message.getOrigClOrdID().getValue());
+		//撤单数量
+		order.setQty(message.getOrderQty().getValue()); 
+		//买卖方向为枚举类型
+		order.setSide(com.simulator.model.tags.Side.valueOf(message.getSide().getValue()));
+		order.setSymbol(message.getSymbol().getValue());
+		/*
+		 * 将这笔委托显示在界面上
+		 */
+		OrderBook.getInstance().addOrder(order);  
 	}
 	
 	

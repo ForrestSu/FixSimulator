@@ -1,6 +1,6 @@
 package com.simulator.controller.er.processor;
 
-import com.simulator.model.messages.ExecutionReport;
+import com.simulator.model.messages.MsgExecutionReport;
 
 /**
  * This component gets {@code ExecutionReport} messages and processes them
@@ -11,5 +11,5 @@ import com.simulator.model.messages.ExecutionReport;
  */
 public interface ExecutionReportProcessor {
 
-	public void process(ExecutionReport er);
+	public void process(MsgExecutionReport er);
 }
