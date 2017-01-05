@@ -33,7 +33,7 @@ version = '0.1'
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'FIXBro',
+        attributes 'Implementation-Title': 'FixSimulator',
                    'Implementation-Version': version
     }
 }
