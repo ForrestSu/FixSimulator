@@ -23,6 +23,8 @@ public class MsgExecutionReport {
 	private final ExecType ordStatus;
 	private final double avgPx;
 	private final double cumQty;
+	private final double orderQty;
+	
 	private final double leavesQty;
 	private final String Text;
 
@@ -63,8 +65,9 @@ public class MsgExecutionReport {
 		this.order = builder.order;
 		this.avgPx = builder.order.getAvgPx();
 		this.cumQty = builder.order.getCumQty();
-		this.execType = builder.order.getOrdStatus();
+		this.orderQty =builder.order.getOrderQty();//订单数量
 		this.leavesQty = builder.order.getLeavesQty();
+		this.execType = builder.order.getOrdStatus();
 		this.ordStatus = builder.order.getOrdStatus(); //same as ExecType 
         this.Text = builder.order.getText();
         
@@ -117,6 +120,11 @@ public class MsgExecutionReport {
 	public String getText() {
 		return Text;
 	}
+	
+	public double getOrderQty() {
+		return orderQty;
+	}
+
 
 	@Override
 	public String toString() {

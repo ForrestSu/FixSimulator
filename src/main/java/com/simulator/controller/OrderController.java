@@ -13,6 +13,8 @@ public interface OrderController {
 	public void execute(Order order, double lastPx, double lastQty);
 
 	public void reject(Order order, String reason);
+	
+	public void cancelReject(Order order, String reason);
 
 	public void cancel(Order order);
 

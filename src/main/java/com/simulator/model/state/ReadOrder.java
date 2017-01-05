@@ -28,7 +28,7 @@ public interface ReadOrder {
 
 	OrdType getOrdType();
 
-	double getQty();
+	double getOrderQty();
 
 	double getAvgPx();
 

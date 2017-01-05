@@ -8,8 +8,7 @@ import com.simulator.model.state.OrderBean;
 import com.simulator.util.DisplayUtils;
 
 import javafx.application.Application;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -36,7 +35,8 @@ public class OrderView extends Application {
 	private OrderBlotter blotter; //OrderBlottle实例
 	private TableView<OrderBean> orderTableView;//引用OrderBlottle中的tableView
 	private final Executor backgroundExecutor;//执行器
-
+    private Text infotitle; //提示错误信息
+    
 	public OrderView(OrderController controller) {
 		this.controller = controller;
 		this.backgroundExecutor = Executors.newCachedThreadPool();
@@ -79,11 +79,14 @@ public class OrderView extends Application {
 		HBox hbox = new HBox();
 		hbox.setSpacing(10);
 		DisplayUtils.applyStyleTo(hbox);
-        
-		
+		infotitle = new Text("");
+		infotitle.setFont(Font.font("Console", FontWeight.LIGHT, 14));
+		infotitle.setFill(Color.YELLOW);
+		infotitle.setTextOrigin(VPos.BOTTOM);
 		//订单确认
 		Button buttonAck = new Button("委托确认");
 		buttonAck.setOnAction(event -> {
+			infotitle.setText("");
 			OrderBean selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
 			controller.acknowledge(selectedOrder);
 		});
@@ -91,13 +94,25 @@ public class OrderView extends Application {
 		//订单拒绝
 		Button buttonRejct = new Button("废单/拒绝");
 		buttonRejct.setOnAction(event -> {
+			infotitle.setText("");
 			OrderBean selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-			controller.reject(selectedOrder, "simulator reject!");
+			if(selectedOrder.getMsgType().equals("D"))
+			{
+				infotitle.setText("New Order Reject!");
+				controller.reject(selectedOrder, "NewOrder reject!");
+			}else if(selectedOrder.getMsgType().equals("F"))
+			{
+				infotitle.setText("Cancel Order Reject!");
+				controller.cancelReject(selectedOrder, "CancelOrder Reject!");
+			}else {
+				infotitle.setText("该订单类型不支持发送废单消息！msgType="+selectedOrder.getMsgType());
+			}
 		});
 		
         //订单成交
 		Button buttonExecute = new Button("成交");
 		buttonExecute.setOnAction(event -> {
+			infotitle.setText("");
 			//弹出一个框
 			if (executeOrderStage == null) {
 				executeOrderStage = new ExecuteOrderStage(controller, backgroundExecutor);
@@ -110,17 +125,27 @@ public class OrderView extends Application {
 	    //撤单成交
 		Button buttonCancelReject = new Button("撤单成交");
 		buttonCancelReject.setOnAction(event -> {
+			infotitle.setText("");
 			OrderBean selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-			controller.cancel(selectedOrder);
+			//这里需要获取这笔原委托的订单数量,累计成交数量
+			OrderBean orgiOrder = blotter.searchOrderByClId(selectedOrder.getOrigClOrdID());
+			if(orgiOrder==null){
+				infotitle.setText("未找到该撤单委托对应的原委托！原委托号"+selectedOrder.getOrigClOrdID());
+			}
+			else {
+				selectedOrder.setOrderQty(orgiOrder.getOrderQty());
+				selectedOrder.setCumQty(orgiOrder.getCumQty());
+				controller.cancel(selectedOrder);
+			}
 		});
-		
 		//清空所有订单
 		Button buttonCLear = new Button("清空");
 		buttonCLear.setOnAction(event -> {
+			infotitle.setText("");
 			blotter.ClearAllOrders();
 		});
 		
-		hbox.getChildren().addAll(buttonAck, buttonRejct,buttonExecute,buttonCancelReject,buttonCLear);
+		hbox.getChildren().addAll(buttonAck, buttonRejct,buttonExecute,buttonCancelReject,buttonCLear,infotitle);
 		disableIfNoSelection(buttonAck, buttonRejct,buttonExecute,buttonCancelReject,buttonCLear);
 
 		return hbox;

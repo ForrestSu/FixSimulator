@@ -17,7 +17,6 @@ import quickfix.RejectLogon;
 import quickfix.SessionID;
 import quickfix.UnsupportedMessageType;
 import quickfix.field.MsgType;
-import quickfix.field.OrigClOrdID;
 import quickfix.field.SenderCompID;
 import quickfix.field.TargetCompID;
 import quickfix.fix42.Logon;
@@ -104,11 +103,12 @@ public class QFJApplicationIn extends quickfix.fix42.MessageCracker implements q
 		//如果是市价订单,则没有价格
 		if(message.isSetPrice())
 			order.setPrice(message.getPrice().getValue());
-		order.setQty(message.getOrderQty().getValue());
+		order.setOrderQty(message.getOrderQty().getValue());
 		//买卖方向为枚举类型
 		order.setSide(com.simulator.model.tags.Side.valueOf(message.getSide().getValue()));
 		order.setSymbol(message.getSymbol().getValue());
-		order.setText(message.getText().getValue());
+		if(message.isSetText())
+		  order.setText(message.getText().getValue());
 		/*
 		 * 将这笔委托显示在界面上
 		 */
@@ -129,11 +129,12 @@ public class QFJApplicationIn extends quickfix.fix42.MessageCracker implements q
 		//原始订单编号
 		order.setOrigClOrdID(message.getOrigClOrdID().getValue());
 		//撤单数量
-		order.setQty(message.getOrderQty().getValue()); 
+		order.setOrderQty(message.getOrderQty().getValue()); 
 		//买卖方向为枚举类型
 		order.setSide(com.simulator.model.tags.Side.valueOf(message.getSide().getValue()));
 		order.setSymbol(message.getSymbol().getValue());
-		order.setText(message.getText().getValue());
+		if(message.isSetText())
+		   order.setText(message.getText().getValue());
 		/*
 		 * 将这笔委托显示在界面上
 		 */

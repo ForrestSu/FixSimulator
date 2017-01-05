@@ -26,6 +26,7 @@ public class OrderBean implements Order {
 	private StringProperty msgType;
 	private DoubleProperty leavesQty;
 	private DoubleProperty cumQty;
+	private DoubleProperty orderQty;
 	private DoubleProperty avgPx;
 	private StringProperty ordStatus;
 	private StringProperty ordType; //TAG35
@@ -55,8 +56,8 @@ public class OrderBean implements Order {
 		setOrdStatus(from.getOrdStatus());
 		setOrdType(from.getOrdType());
 		setPrice(from.getPrice());
-		setOrigClOrdID(from.getClOrdID());
-		setQty(from.getQty());
+		setOrigClOrdID(from.getOrigClOrdID());
+		setOrderQty(from.getOrderQty());
 		setSide(from.getSide());
 		setSymbol(from.getSymbol());
 		setTimeInForce(from.getTimeInForce());
@@ -160,9 +161,12 @@ public class OrderBean implements Order {
 	}
 
 	@Override
-	public double getQty() {
-		// TODO Auto-generated method stub
-		return 0;
+	public double getOrderQty() {
+		return orderQty.get();
+	}
+	
+	public DoubleProperty getOrderQtyProperty() {
+		return orderQty;
 	}
 
 	@Override
@@ -203,7 +207,7 @@ public class OrderBean implements Order {
 	
 	@Override
 	public String getText() {
-		if(Text==null) return "null";
+		if(Text==null) return "";
 		else return Text.get();
 	}
 	//用于界面展示
@@ -280,9 +284,10 @@ public class OrderBean implements Order {
 	}
 
 	@Override
-	public void setQty(double qty) {
-		// TODO Auto-generated method stub
-
+	public void setOrderQty(double qty) {
+		if (orderQty == null)
+			orderQty = new SimpleDoubleProperty(this, "orderQty");
+		this.orderQty.set(qty);
 	}
 
 	@Override

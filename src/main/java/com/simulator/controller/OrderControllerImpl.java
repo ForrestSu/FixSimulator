@@ -36,17 +36,24 @@ public class OrderControllerImpl implements OrderController {
 		logger.info("Executing order {} with lastPx {} and lastQty {}",order.getOrderID(), lastPx, lastQty);
 		DoOrderExecutionReport(new ExecuteOrderImp(order, lastPx, lastQty));
 	}
-    //订单拒绝 
+    //订单拒绝 (注意NewOrder、 CancelOrder 委托)
 	@Override
 	public void reject(Order order, String reason) {
-		logger.info("To Comfirm order {}", order.getOrderID());
+		logger.info("发送一笔废单: {}", order.getOrderID());
 		DoOrderExecutionReport(new RejectOrderImp(order,reason));
+	}
+	//撤单拒绝
+	@Override
+	public void cancelReject(Order order, String reason) {
+		// TODO Auto-generated method stub
+		logger.info("发送一笔撤单拒绝: {}", order.getOrderID());
+		DoOrderExecutionReport(new CancelRejectOrderImp(order,reason));   
 	}
     //撤单成交，注意数量
 	@Override
 	public void cancel(Order order) {
 		// TODO Auto-generated method stub
-		logger.info("To Canceled order {}", order.getOrderID());
+		logger.info("发送一笔撤单成交: {}", order.getOrderID());
 		DoOrderExecutionReport(new CancelAckOrderImp(order));
 	}
 
@@ -71,7 +78,7 @@ public class OrderControllerImpl implements OrderController {
 	 //发送委托确认
 	@Override
 	public void acknowledge(Order order) {
-		logger.info("To Comfirm order {}", order.getOrderID());
+		logger.info("订单确认： {}", order.getOrderID());
 		DoOrderExecutionReport(new ComfirmOrderImp(order));
 	}
   
@@ -92,5 +99,4 @@ public class OrderControllerImpl implements OrderController {
 		// TODO Auto-generated method stub
 
 	}
-
 }

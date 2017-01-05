@@ -33,7 +33,7 @@ public interface Order extends ReadOrder {
 
 	void setOrdType(OrdType type);
 
-	void setQty(double qty);
+	void setOrderQty(double qty);
 
 	void setAvgPx(double price);
 

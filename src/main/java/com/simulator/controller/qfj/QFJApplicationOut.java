@@ -14,7 +14,8 @@ import quickfix.SessionNotFound;
 import quickfix.field.AvgPx;
 import quickfix.field.ClOrdID;
 import quickfix.field.CumQty;
-import quickfix.field.DeliverToCompID;
+import quickfix.field.CxlRejReason;
+import quickfix.field.ExecBroker;
 import quickfix.field.ExecID;
 import quickfix.field.ExecTransType;
 import quickfix.field.ExecType;
@@ -23,12 +24,14 @@ import quickfix.field.LastShares;
 import quickfix.field.LeavesQty;
 import quickfix.field.OrdStatus;
 import quickfix.field.OrderID;
+import quickfix.field.OrderQty;
 import quickfix.field.SenderCompID;
 import quickfix.field.Side;
 import quickfix.field.Symbol;
 import quickfix.field.TargetCompID;
 import quickfix.field.Text;
 import quickfix.field.TransactTime;
+import quickfix.fix42.Message;
 
 /**
  * @author sunquan
@@ -37,10 +40,63 @@ import quickfix.field.TransactTime;
 public class QFJApplicationOut implements ExecutionReportObserver {
 
 	private static final Logger logger = LoggerFactory.getLogger(QFJApplicationOut.class);
-
+   
+	//发送FIX消息
+	private static boolean sendFixMsg(Message message){
+		boolean ret=false;
+		try {
+			Session.sendToTarget(message); // reverse
+			ret = true;
+			logger.info("FIX消息:{}",message);
+		} catch (SessionNotFound e) {
+			logger.error("无法发送消息{}:{}",message ,e.getMessage());
+		}
+		return ret;
+    }
 	@Override
 	public boolean onExecutionReport(MsgExecutionReport er) {
-		boolean ret=false;
+		Message message = null;
+		//如果是撤单废单
+		if(er.getOrdStatus() == com.simulator.model.tags.ExecType.CANCEL_REJECTED)
+		{
+			message = getRejectMessage(er) ;
+			return  sendFixMsg(message);
+		}else
+		{
+		    message = getExecMessage(er);
+		    return  sendFixMsg(message);
+		}
+	}
+	 //生成一笔撤单拒绝报告
+	private quickfix.fix42.OrderCancelReject getRejectMessage(MsgExecutionReport er)
+	{
+		quickfix.fix42.OrderCancelReject orderER = new quickfix.fix42.OrderCancelReject();
+		ReadOrder order = er.getOrder();
+		orderER.getHeader().setString(SenderCompID.FIELD,order.getTargetCompID());
+		orderER.getHeader().setString(TargetCompID.FIELD,order.getSenderCompID());
+		//DeliverToCompID
+		orderER.set(new ClOrdID(er.getClOrdID()));
+		orderER.set(new OrderID(order.getOrderID()));
+		/*
+		 * 虚拟一个执行券商
+		 */
+		orderER.set(new ExecBroker("Simulator")); 
+		orderER.set(new OrdStatus(er.getOrdStatus().toChar()));
+		/*
+		 * 0=Too late to cancel
+		 * 1=Unknown order
+		 * 2=Broker Option
+		 * 3=Order already in Pending Cancel or Pending Replace status
+		 */
+		orderER.set(new CxlRejReason(2));//撤单废单
+		orderER.set(new Text(er.getText()));//具体说明
+		//执行类型TAG20 置为0
+		orderER.set(new TransactTime());//这里默认是当前日期
+		return orderER;
+	}
+	//生成一个执行报告
+	private quickfix.fix42.ExecutionReport getExecMessage(MsgExecutionReport er)
+	{
 		quickfix.fix42.ExecutionReport orderER = new quickfix.fix42.ExecutionReport();
 		ReadOrder order = er.getOrder();
 		orderER.getHeader().setString(SenderCompID.FIELD,order.getTargetCompID());
@@ -53,6 +109,7 @@ public class QFJApplicationOut implements ExecutionReportObserver {
 		orderER.set(new ExecType(er.getExecType().toChar()));
 		orderER.set(new CumQty(er.getCumQty()));
 		orderER.set(new AvgPx(er.getAvgPx()));
+		orderER.set(new OrderQty(er.getOrderQty()));
 		orderER.set(new LeavesQty(er.getLeavesQty()));
 		orderER.set(new Side(er.getOrder().getSide().toChar()));
 		orderER.set(new Symbol(er.getOrder().getSymbol()));
@@ -71,15 +128,6 @@ public class QFJApplicationOut implements ExecutionReportObserver {
 			//10044	LocalTransactTime
 			orderER.setUtcTimeStamp(10044, new Date());
 		}
-		try {
-			Session.sendToTarget(orderER); // reverse
-			ret = true;
-			logger.info("ExecutionReport:{}",orderER);
-		} catch (SessionNotFound e) {
-			logger.error("无法发送消息{}:{}",orderER ,e.getMessage());
-			// TODO implement rollback
-		}
-		return ret;
+		return orderER;
 	}
-
 }

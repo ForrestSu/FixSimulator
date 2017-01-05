@@ -73,6 +73,8 @@ public class OrderBlotter implements OrderObserver {
 		avgPx.setCellValueFactory(cellData -> cellData.getValue().getAvgPxProperty().asObject());
 		TableColumn<OrderBean, String> clOrdID = new TableColumn<>("客户订单编号");
 		clOrdID.setCellValueFactory(cellData -> cellData.getValue().getClOrdIDProperty());
+		TableColumn<OrderBean, Double> orderQty = new TableColumn<>("订单数量");
+		orderQty.setCellValueFactory(cellData -> cellData.getValue().getOrderQtyProperty().asObject());
 		TableColumn<OrderBean, Double> cumQty = new TableColumn<>("累积成交数量");
 		cumQty.setCellValueFactory(cellData -> cellData.getValue().getCumQtyProperty().asObject());
 		TableColumn<OrderBean, Double> leavesQty = new TableColumn<>("剩余数量");
@@ -95,19 +97,28 @@ public class OrderBlotter implements OrderObserver {
 		senderCompID.setCellValueFactory(cellData -> cellData.getValue().getSenderCompIDProperty());
 		TableColumn<OrderBean, String> targetCompID = new TableColumn<>("接收方ID");
 		targetCompID.setCellValueFactory(cellData -> cellData.getValue().getTargetCompIDProperty());
+		TableColumn<OrderBean, String> sText = new TableColumn<>("备注");
+		sText.setCellValueFactory(cellData -> cellData.getValue().getTextProperty());
 		
 		TableColumn<OrderBean, String> MsgType = new TableColumn<>("消息类型");//msgType
 		MsgType.setCellValueFactory(cellData -> cellData.getValue().getMsgTypeProperty());
 		// TODO fill all values
 		
-		getTableView().getColumns().setAll(orderID,MsgType, symbol, ordType, price, side, ordStatus, leavesQty, cumQty, avgPx,
-				clOrdID, origClOrdID, senderCompID, targetCompID);
+		getTableView().getColumns().setAll(orderID,MsgType, symbol, ordType, price, side, ordStatus,orderQty, leavesQty, cumQty, avgPx,
+				clOrdID, origClOrdID, senderCompID, targetCompID,sText);
 	}
 
 	public TableView<OrderBean> getTableView() {
 		return tableView;
 	}
-	
+	//查找原委托
+	public OrderBean searchOrderByClId(String OrigClOrd){
+		for(OrderBean order: observableOrderList){
+			if(order.getClOrdID().equals(OrigClOrd))
+				return order;
+		}
+		return null;
+	}
 	//新订单
 	@Override
 	public void onNewOrder(Order Neworder) {
