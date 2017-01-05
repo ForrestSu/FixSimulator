@@ -35,7 +35,7 @@ import quickfix.ConfigError;
 public class FIXSim extends Application {
 	
 	//configure file
-	public static String CONFIGURE_FILE="fixbro_qfj.cfg";
+	public static String CONFIGURE_FILE="fixsimulator.cfg";
 	private Application view;
 	private QFJAcceptor acceptor;
 	

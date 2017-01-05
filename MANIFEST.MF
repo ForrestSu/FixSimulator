@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Class-Path: . lib/log4j-api-2.6.1.jar lib/log4j-core-2.6.1.jar lib/log4j-slf4j-impl-2.6.1.jar lib/mina-core-2.0.13.jar lib/quickfixj-core-1.6.2.jar lib/quickfixj-messages-all-1.6.2.jar lib/quickfixj-messages-fix42-1.6.2.jar lib/slf4j-api-1.7.18.jar 
+Main-Class: com.simulator.main.FIXSim
