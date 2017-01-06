@@ -8,6 +8,7 @@ import com.simulator.model.state.OrderBean;
 import com.simulator.util.DisplayUtils;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -21,6 +22,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * View part of the MVC model
@@ -54,6 +56,13 @@ public class OrderView extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("FIX Simulator");
 		//primaryStage.getIcons().add(new Image(OrderView.class.getResourceAsStream("/resource/orange-ball.png")));
+		//任务关闭时,子线程也一起退出!
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+	            @Override
+	            public void handle(WindowEvent event) {
+	                System.exit(0);
+	            }
+	        });
 		primaryStage.show();
 	}
     //顶部的面板
