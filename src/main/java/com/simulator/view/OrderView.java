@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 
 import com.simulator.controller.OrderController;
 import com.simulator.model.state.OrderBean;
+import com.simulator.model.tags.ExecType;
 import com.simulator.util.DisplayUtils;
 
 import javafx.application.Application;
@@ -47,7 +48,7 @@ public class OrderView extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		final BorderPane root = new BorderPane();
-		final Scene scene = new Scene(root, 700, 500);
+		final Scene scene = new Scene(root, 850, 530);
 		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 		root.setTop(buildTopPane());
 		root.setCenter(buildCenterPane());
@@ -95,56 +96,61 @@ public class OrderView extends Application {
 		//订单确认
 		Button buttonAck = new Button("委托确认");
 		buttonAck.setOnAction(event -> {
-			infotitle.setText("");
 			OrderBean selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-			controller.acknowledge(selectedOrder);
+			infotitle.setText(""); 
+			if(selectedOrder.getOrdStatus() == ExecType.NONE_YET)
+			   controller.acknowledge(selectedOrder);
+			else infotitle.setText("该笔委托已经确认过,无需再次确认!"); 
 		});
 		
 		//订单拒绝
 		Button buttonRejct = new Button("废单/拒绝");
 		buttonRejct.setOnAction(event -> {
-			infotitle.setText("");
 			OrderBean selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-			if(selectedOrder.getMsgType().equals("D"))
-			{
-				infotitle.setText("New Order Reject!");
-				controller.reject(selectedOrder, "NewOrder reject!");
-			}else if(selectedOrder.getMsgType().equals("F"))
-			{
-				infotitle.setText("Cancel Order Reject!");
-				controller.cancelReject(selectedOrder, "CancelOrder Reject!");
-			}else {
-				infotitle.setText("该订单类型不支持发送废单消息！msgType="+selectedOrder.getMsgType());
+			if(IfOrderNotFinish(selectedOrder)){
+				if(selectedOrder.getMsgType().equals("D"))
+				{
+					infotitle.setText("New Order Reject!");
+					controller.reject(selectedOrder, "NewOrder reject!");
+				}else if(selectedOrder.getMsgType().equals("F"))
+				{
+					infotitle.setText("Cancel Order Reject!");
+					controller.cancelReject(selectedOrder, "CancelOrder Reject!");
+				}else {
+					infotitle.setText("该订单类型不支持发送废单消息！msgType="+selectedOrder.getMsgType());
+				}
 			}
 		});
 		
         //订单成交
 		Button buttonExecute = new Button("成交");
 		buttonExecute.setOnAction(event -> {
-			infotitle.setText("");
 			//弹出一个框
 			if (executeOrderStage == null) {
 				executeOrderStage = new ExecuteOrderStage(controller, backgroundExecutor);
 			}
 			OrderBean selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-			executeOrderStage.setTargetOrder(selectedOrder);
-			executeOrderStage.show();
+			if(IfOrderNotFinish(selectedOrder)){
+				executeOrderStage.setTargetOrder(selectedOrder);
+				executeOrderStage.show();
+			}
 		});
 		
 	    //撤单成交
 		Button buttonCancelReject = new Button("撤单成交");
 		buttonCancelReject.setOnAction(event -> {
-			infotitle.setText("");
 			OrderBean selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-			//这里需要获取这笔原委托的订单数量,累计成交数量
-			OrderBean orgiOrder = blotter.searchOrderByClId(selectedOrder.getOrigClOrdID());
-			if(orgiOrder==null){
-				infotitle.setText("未找到该撤单委托对应的原委托！原委托号"+selectedOrder.getOrigClOrdID());
-			}
-			else {
-				selectedOrder.setOrderQty(orgiOrder.getOrderQty());
-				selectedOrder.setCumQty(orgiOrder.getCumQty());
-				controller.cancel(selectedOrder);
+			if(IfOrderNotFinish(selectedOrder)){
+				//这里需要获取这笔原委托的订单数量,累计成交数量
+				OrderBean orgiOrder = blotter.searchOrderByClId(selectedOrder.getOrigClOrdID());
+				if(orgiOrder==null){
+					infotitle.setText("未找到该撤单委托对应的原委托！原委托号"+selectedOrder.getOrigClOrdID());
+				}
+				else {
+					selectedOrder.setOrderQty(orgiOrder.getOrderQty());
+					selectedOrder.setCumQty(orgiOrder.getCumQty());
+					controller.cancel(selectedOrder);
+				}
 			}
 		});
 		//清空所有订单
@@ -159,8 +165,21 @@ public class OrderView extends Application {
 
 		return hbox;
 	}
+	//检查订单是否为终止状态
+	private boolean IfOrderNotFinish(OrderBean order){
+		infotitle.setText("");
+		ExecType status =  order.getOrdStatus();
+	    if((status==ExecType.FILLED)|| (status==ExecType.CANCEL_REJECTED)||
+	       (status==ExecType.REJECTED)||(status==ExecType.CANCELED)||
+	       (status==ExecType.DONE_FOR_DAY))
+	    {
+	    	infotitle.setText("该笔委托为"+status+"已经是终止状态!");
+	    	return false;
+	    }
+	    return true;
+	}
 	
-    //按钮不可用
+    //按钮置为不可用
 	private void disableIfNoSelection(Button... buttons) {
 		for (Button button : buttons) {
 			button.disableProperty().bind(orderTableView.getSelectionModel().selectedItemProperty().isNull());

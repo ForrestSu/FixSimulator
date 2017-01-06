@@ -20,8 +20,7 @@ public enum ExecType {
 	REJECTED('8', "REJECTED"),
 	CANCEL_REJECTED('9', "Cancel Rejected"),
 	PENDING_NEW('A',"PENDING NEW"), 
-	PENDING_REPLACE('E', "PENDING REPLACE"), 
-	TRADE('F', "TRADE");
+	PENDING_REPLACE('E', "PENDING REPLACE");
 
 	private final char fixTag;
 	private final String humanValue;

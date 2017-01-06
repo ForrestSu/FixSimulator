@@ -65,7 +65,7 @@ public class FIXSim extends Application {
 		 order1.setLeavesQty(1000D);
 		 order1.setOrderID("E1234");
 		 order1.setOrdType(OrdType.LIMIT);
-		 order1.setOrdStatus(ExecType.NONE_YET);
+		 order1.setOrdStatus(ExecType.CANCELED);
 		 order1.setOrigClOrdID("orig1234");
 		 order1.setPrice(1.35D);
 		 order1.setOrderQty(1000D);

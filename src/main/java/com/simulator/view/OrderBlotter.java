@@ -104,7 +104,7 @@ public class OrderBlotter implements OrderObserver {
 		MsgType.setCellValueFactory(cellData -> cellData.getValue().getMsgTypeProperty());
 		// TODO fill all values
 		
-		getTableView().getColumns().setAll(orderID,MsgType, symbol, ordType, price, side, ordStatus,orderQty, leavesQty, cumQty, avgPx,
+		getTableView().getColumns().setAll(ordStatus,orderID,MsgType, symbol, ordType, price, side, orderQty, leavesQty, cumQty, avgPx,
 				clOrdID, origClOrdID, senderCompID, targetCompID,sText);
 	}
 
