@@ -4,6 +4,11 @@ Of course, there are some minor problems, If you want to improve it,Welcome add
 Enjoy it.
 Please Attention Just for **Fix4.2**
 
+### Unsupported
+There are five common Order actions do not support now ! `(2017-02-09)`
+>Modify Fill / Cancel Fill  
+>Fill-Allocation / Ack Fill-Allocation / Reject Fill-Allocation 
+
 ###Requirements
 - JRE 8
 - quickfixj

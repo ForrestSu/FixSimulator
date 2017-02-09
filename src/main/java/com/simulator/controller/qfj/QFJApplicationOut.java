@@ -113,7 +113,8 @@ public class QFJApplicationOut implements ExecutionReportObserver {
 		orderER.set(new LeavesQty(er.getLeavesQty()));
 		orderER.set(new Side(er.getOrder().getSide().toChar()));
 		orderER.set(new Symbol(er.getOrder().getSymbol()));
-		orderER.set(new Text(er.getText()));
+		if(er.getText().length()>0)
+		   orderER.set(new Text(er.getText()));
 		//执行类型TAG20 置为0
 		orderER.set(new ExecTransType('0'));
 		orderER.set(new TransactTime());//这里默认是当前日期
