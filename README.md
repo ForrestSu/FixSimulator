@@ -9,24 +9,24 @@ There are five common Order actions do not support now ! `(2017-02-09)`
 >Modify Fill / Cancel Fill  
 >Fill-Allocation / Ack Fill-Allocation / Reject Fill-Allocation 
 
-###Requirements
+### Requirements
 - JRE 8
 - quickfixj
 
-###Author
+### Author
  SunQuan
 
-###Screenshot
+### Screenshot
 ![Effection](https://github.com/ForrestSu/FixSimulator/raw/master/images/screenshot.png)
 
 
-###For Developer
-####1 How to get the project compiling on Eclipse  
+### For Developer
+#### 1 How to get the project compiling on Eclipse  
 - Clone this repository via GIT
 - On a console, go to the git/FixSimulator folder and:
     - if you're on Linux/MacOS, run the command './gradlew build eclipse'
     - if you're on Windows, run 'gradle.bat build eclipse'
 - Import FixSimulator into your Eclipse
 
-####2 How to run the app
+#### 2 How to run the app
 - Run FixSim.java
