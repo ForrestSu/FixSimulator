@@ -11,5 +11,5 @@ import com.simulator.model.messages.MsgExecutionReport;
  */
 public interface ExecutionReportProcessor {
 
-	public void process(MsgExecutionReport er);
+	void process(MsgExecutionReport er);
 }

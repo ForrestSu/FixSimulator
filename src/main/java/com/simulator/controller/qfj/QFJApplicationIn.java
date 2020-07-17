@@ -1,4 +1,4 @@
-﻿package com.simulator.controller.qfj;
+package com.simulator.controller.qfj;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,8 +1,15 @@
+
+# idea
+.idea/
+
+# eclipse
 .classpath
 .metadata
 .project
 build/
 .gradle/
 .settings/
+
+# others
 /logs/
 /bin/

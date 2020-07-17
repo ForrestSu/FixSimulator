@@ -1,6 +1,6 @@
 package com.simulator.controller.qfj;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,7 +127,7 @@ public class QFJApplicationOut implements ExecutionReportObserver {
 			orderER.set(new LastShares(er.getLastQty()));//single deal amount
 			//期货成交需要送成交时间字段
 			//10044	LocalTransactTime
-			orderER.setUtcTimeStamp(10044, new Date());
+			orderER.setUtcTimeStamp(10044, LocalDateTime.now());
 		}
 		return orderER;
 	}

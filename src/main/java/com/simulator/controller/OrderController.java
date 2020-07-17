@@ -10,26 +10,26 @@ import com.simulator.model.state.Order;
  */
 public interface OrderController {
 
-	public void execute(Order order, double lastPx, double lastQty);
+	void execute(Order order, double lastPx, double lastQty);
 
-	public void reject(Order order, String reason);
+	void reject(Order order, String reason);
 	
-	public void cancelReject(Order order, String reason);
+	void cancelReject(Order order, String reason);
 
-	public void cancel(Order order);
+	void cancel(Order order);
 
-	public void doneForDay(Order order);
+	void doneForDay(Order order);
 
-	public void expire(Order order);
+	void expire(Order order);
 
-	public void replace(Order order);
+	void replace(Order order);
 
-	public void acknowledge(Order order);
-		
-	public void pendingNew(Order order);
+	void acknowledge(Order order);
 
-	public void pendingCancel(Order order);
+	void pendingNew(Order order);
 
-	public void pendingReplace(Order order);
+	void pendingCancel(Order order);
+
+	void pendingReplace(Order order);
 
 }

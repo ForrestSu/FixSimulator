@@ -10,8 +10,10 @@ There are five common Order actions do not support now ! `(2017-02-09)`
 >Fill-Allocation / Ack Fill-Allocation / Reject Fill-Allocation 
 
 ### Requirements
+
 - JRE 8
-- quickfixj
+- quickfixj v2.2.0
+- Gradle 4.8.1
 
 ### Author
  SunQuan
@@ -25,8 +27,11 @@ There are five common Order actions do not support now ! `(2017-02-09)`
 - Clone this repository via GIT
 - On a console, go to the git/FixSimulator folder and:
     - if you're on Linux/MacOS, run the command './gradlew build eclipse'
-    - if you're on Windows, run 'gradle.bat build eclipse'
+    - if you're on Windows, run 'gradlew.bat build eclipse'
 - Import FixSimulator into your Eclipse
 
 #### 2 How to run the app
 - Run FixSim.java
+
+###  ChangeLog
+- 2020-07-17 11:31:23 upgrade quickfixj to v2.2.0

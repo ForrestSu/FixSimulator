@@ -44,6 +44,7 @@ public class PendingNewOrderTest {
 		Order order = new OrderBean();
 		order.setClOrdID("id1");
 		order.setLeavesQty(100);
+		order.setOrderQty(100);
 		MsgExecutionReport pendingEr = new PendingNewOrderImp(order).getExecutionReport();
 
 		assertEquals(0, order.getAvgPx(), 0);

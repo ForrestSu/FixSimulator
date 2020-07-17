@@ -11,6 +11,6 @@ import com.simulator.model.messages.MsgExecutionReport;
  */
 public interface ExecutionReportObserver {
 
-	public boolean onExecutionReport(MsgExecutionReport er);
+	boolean onExecutionReport(MsgExecutionReport er);
 
 }

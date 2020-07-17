@@ -31,6 +31,7 @@ public class ExecuteOrderTest {
 		order.setClOrdID("id1");
 		order.setCumQty(0);
 		order.setLeavesQty(100);
+		order.setOrderQty(100);
 		ExecuteOrderImp executeOrder = new ExecuteOrderImp(order, 1.12, 100);
 		MsgExecutionReport er = executeOrder.getExecutionReport();
 		
@@ -53,6 +54,7 @@ public class ExecuteOrderTest {
 		order.setClOrdID("id1");
 		order.setCumQty(0);
 		order.setLeavesQty(100);
+		order.setOrderQty(100);
 		
 		// partial fill half of the quantity
 		ExecuteOrderImp executeOrder = new ExecuteOrderImp(order, 1.12, 50);

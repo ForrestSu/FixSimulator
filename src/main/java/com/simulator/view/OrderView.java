@@ -1,4 +1,4 @@
-﻿package com.simulator.view;
+package com.simulator.view;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
