@@ -36,9 +36,14 @@ public class FIXSim extends Application {
 
 	private Application view;
 	private QFJAcceptor acceptor;
+	private static String[] argLists;
 	
 	public FIXSim() throws ConfigError {
-		final String CfgFile ="fixsimulator.cfg";
+		String CfgFile ="fixsimulator.cfg";
+		if (argLists != null && argLists.length > 0 && argLists[0].endsWith(".cfg")) {
+			CfgFile = argLists[0];
+		}
+		System.out.println("config: " + CfgFile);
 		// final String cssUrl = getClass().getResource("application.css").toExternalForm();
 		final String cssUrl = null;
 
@@ -54,6 +59,7 @@ public class FIXSim extends Application {
 
 	public static void main(String[] args) {
 		// launch JavaFX
+		argLists = args;
 		launch(args);
 	}
 	 private void AddTestData(){

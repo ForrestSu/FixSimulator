@@ -104,6 +104,7 @@ public class OrderBlotter implements OrderObserver {
 		MsgType.setCellValueFactory(cellData -> cellData.getValue().getMsgTypeProperty());
 
 		TableColumn<OrderBean, String> createTime = new TableColumn<>("创建时间");//msgType
+		createTime.setMinWidth(150);
 		createTime.setCellValueFactory(cellData -> cellData.getValue().getTransactTimProperty());
 		// TODO fill all values
 		
