@@ -1,6 +1,8 @@
 
 # idea
 .idea/
+build/
+
 *.iml
 *.ipr
 *.iws
@@ -9,10 +11,11 @@
 .classpath
 .metadata
 .project
-build/
-.gradle/
 .settings/
+
+
+.gradle/
 
 # others
 /logs/
-/bin/
+prod-logs/
