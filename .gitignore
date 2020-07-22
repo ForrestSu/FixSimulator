@@ -1,6 +1,9 @@
 
 # idea
 .idea/
+*.iml
+*.ipr
+*.iws
 
 # eclipse
 .classpath
