@@ -39,4 +39,6 @@ public interface ReadOrder {
 	double getLeavesQty();
 	
 	String getText();
+
+	String getTransactTime();
 }

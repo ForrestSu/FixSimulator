@@ -30,6 +30,9 @@ dependencies {
     runtime group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.13.3'
     runtime group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.3'
     runtime group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.13.3'
+
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
     //compile 'org.springframework:spring-core:4.2.5.RELEASE'
     //compile 'org.springframework:spring-context:4.2.5.RELEASE'
     // testing

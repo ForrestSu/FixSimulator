@@ -8,6 +8,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import lombok.Getter;
 
 /**
  * Implementation for the {@link com.simulator.view.OrderBlotter}
@@ -35,6 +36,7 @@ public class OrderBean implements Order {
 	private ExecType ordStatusEnum;
 	private OrdType ordTypeEnum;
 	private Side sideEnum;
+	private StringProperty transactTime;
 
 	// non mandatory fields
 	private StringProperty price;
@@ -63,6 +65,7 @@ public class OrderBean implements Order {
 		setTimeInForce(from.getTimeInForce());
 		setSenderCompID(from.getSenderCompID());
 		setTargetCompID(from.getTargetCompID());
+		setTransactTime(from.getTransactTime());
 	}
 	
 	@Override
@@ -73,6 +76,7 @@ public class OrderBean implements Order {
 	public StringProperty getMsgTypeProperty() {
 		return msgType;
 	}
+
 	@Override
 	public String getSenderCompID() {
 		return senderCompID.get();
@@ -338,6 +342,22 @@ public class OrderBean implements Order {
 		if (Text == null)
 			Text = new SimpleStringProperty(this, "Text");
 		this.Text.set(stext); 
+	}
+
+	@Override
+	public String getTransactTime() {
+		return transactTime.get();
+	}
+
+	public StringProperty getTransactTimProperty() {
+		return transactTime;
+	}
+
+	@Override
+	public void setTransactTime(String transactTime) {
+		if (this.transactTime == null)
+			this.transactTime = new SimpleStringProperty(this, "创建时间");
+		this.transactTime.set(transactTime);
 	}
 
 }

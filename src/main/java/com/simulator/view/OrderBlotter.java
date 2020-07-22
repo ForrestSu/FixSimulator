@@ -102,10 +102,13 @@ public class OrderBlotter implements OrderObserver {
 		
 		TableColumn<OrderBean, String> MsgType = new TableColumn<>("消息类型");//msgType
 		MsgType.setCellValueFactory(cellData -> cellData.getValue().getMsgTypeProperty());
+
+		TableColumn<OrderBean, String> createTime = new TableColumn<>("创建时间");//msgType
+		createTime.setCellValueFactory(cellData -> cellData.getValue().getTransactTimProperty());
 		// TODO fill all values
 		
-		getTableView().getColumns().setAll(ordStatus,orderID,MsgType, symbol, ordType, price, side, orderQty, leavesQty, cumQty, avgPx,
-				clOrdID, origClOrdID, senderCompID, targetCompID,sText);
+		getTableView().getColumns().setAll(clOrdID, origClOrdID, ordStatus, sText, orderID, MsgType, symbol, ordType, price,
+			side, orderQty, leavesQty, cumQty, avgPx, senderCompID, targetCompID, createTime);
 	}
 
 	public TableView<OrderBean> getTableView() {

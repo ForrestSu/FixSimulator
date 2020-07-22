@@ -1,5 +1,6 @@
 package com.simulator.controller.qfj;
 
+import com.simulator.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,8 @@ import quickfix.fix42.Logon;
 import quickfix.fix42.Logout;
 import quickfix.fix42.NewOrderSingle;
 import quickfix.fix42.OrderCancelRequest;
+
+import java.time.format.DateTimeFormatter;
 
 
 /**
@@ -107,8 +110,14 @@ public class QFJApplicationIn extends quickfix.fix42.MessageCracker implements q
 		//买卖方向为枚举类型
 		order.setSide(com.simulator.model.tags.Side.valueOf(message.getSide().getValue()));
 		order.setSymbol(message.getSymbol().getValue());
-		if(message.isSetText())
-		  order.setText(message.getText().getValue());
+		// 58 备注
+		if (message.isSetText()) {
+			order.setText(message.getText().getValue());
+		}
+		if (message.isSetTransactTime()) {
+			String date = DateUtil.DateTimeFormat(message.getTransactTime().getValue());
+			order.setTransactTime(date);
+		}
 		/*
 		 * 将这笔委托显示在界面上
 		 */

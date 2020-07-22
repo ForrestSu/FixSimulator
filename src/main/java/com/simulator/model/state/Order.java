@@ -44,4 +44,6 @@ public interface Order extends ReadOrder {
 	void setLeavesQty(double leavesQty);
 	
 	void setText(String text);
+
+	void setTransactTime(String transactTime);
 }
