@@ -23,15 +23,23 @@ There are five common Order actions do not support now ! `(2017-02-09)`
 
 
 ### For Developer
-#### 1 How to get the project compiling on Eclipse  
+#### 1 How to build? 
+
 - Clone this repository via GIT
-- On a console, go to the git/FixSimulator folder and:
-    - if you're on Linux/MacOS, run the command './gradlew build eclipse'
-    - if you're on Windows, run 'gradlew.bat build eclipse'
-- Import FixSimulator into your Eclipse
+
+```sh
+$ cd FixSimulator
+# if on Linux/MacOS
+$ ./gradlew build  
+# if on Windows
+> gradlew.bat build
+```
 
 #### 2 How to run the app
-- Run FixSim.java
+```sh
+$ cd build/libs 
+$ java -jar FixSimulator-0.1.jar
+```
 
 ###  ChangeLog
 - 2020-07-17 11:31:23 upgrade quickfixj to v2.2.0

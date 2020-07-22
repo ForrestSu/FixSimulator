@@ -3,10 +3,10 @@ apply plugin: 'eclipse'
 
 repositories {
     maven {
-    	url "https://repo.maven.apache.org/maven2"
+        url "https://repo.maven.apache.org/maven2"
     }
     maven {
-    	url "https://repo.marketcetera.org/maven"
+        url "https://repo.marketcetera.org/maven"
     }
 }
 
@@ -30,16 +30,31 @@ dependencies {
 }
 
 version = '0.1'
-
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'FixSimulator',
-                   'Implementation-Version': version
-    }
-}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
-// Launchers
 
+jar {
+    exclude(['fixsimulator.cfg', 'log4j2.xml', 'application.css'])
+    manifest {
+        attributes 'Implementation-Title': 'FixSimulator',
+                   'Implementation-Version': version,
+                   'Main-Class': 'com.simulator.main.FIXSim'
+    }
+    zip64 true
+    from { 
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+    } 
+}
+
+task copyConfigFile(type: Copy) {
+    from('src/main/resources') {
+        include '*'
+    }
+    into 'build/libs'
+}
+
+jar.finalizedBy copyConfigFile

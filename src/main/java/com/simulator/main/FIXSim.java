@@ -33,21 +33,23 @@ import quickfix.ConfigError;
  *
  */
 public class FIXSim extends Application {
-	
-	//configure file
-	public static String CONFIGURE_FILE="fixsimulator.cfg";
+
 	private Application view;
 	private QFJAcceptor acceptor;
 	
 	public FIXSim() throws ConfigError {
+		final String CfgFile ="fixsimulator.cfg";
+		// final String cssUrl = getClass().getResource("application.css").toExternalForm();
+		final String cssUrl = null;
+
 		// sending strategy: directly
-		acceptor = new QFJAcceptor(CONFIGURE_FILE, new QFJApplicationIn());
+		acceptor = new QFJAcceptor(CfgFile, new QFJApplicationIn());
 		
 		List<ExecutionReportObserver> erObservers = Arrays.asList(new QFJApplicationOut());
 		ExecutionReportProcessor erProcessor = new ExecutionReportProcessorImpl(erObservers);
 		OrderController controller = new OrderControllerImpl(erProcessor);
-		
-		view = new OrderView(controller);
+
+		view = new OrderView(controller, cssUrl);
 	}
 
 	public static void main(String[] args) {

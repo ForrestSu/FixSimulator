@@ -33,15 +33,24 @@ import javafx.stage.WindowEvent;
  */
 public class OrderView extends Application {
 
-	private final OrderController controller; //控制器
+	/**
+	 * 控制器
+	 */
+	private final OrderController controller;
+	private final String cssUrl;
 	private ExecuteOrderStage executeOrderStage;
-	private OrderBlotter blotter; //OrderBlottle实例
-	private TableView<OrderBean> orderTableView;//引用OrderBlottle中的tableView
-	private final Executor backgroundExecutor;//执行器
-    private Text infotitle; //提示错误信息
+	// OrderBlottle实例
+	private OrderBlotter blotter;
+	// 引用OrderBlottle中的tableView
+	private TableView<OrderBean> orderTableView;
+	// 执行器
+	private final Executor backgroundExecutor;
+	// 提示错误信息
+    private Text hintMsg;
     
-	public OrderView(OrderController controller) {
+	public OrderView(OrderController controller, String cssUrl) {
 		this.controller = controller;
+		this.cssUrl = cssUrl;
 		this.backgroundExecutor = Executors.newCachedThreadPool();
 	}
 
@@ -49,7 +58,9 @@ public class OrderView extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		final BorderPane root = new BorderPane();
 		final Scene scene = new Scene(root, 850, 530);
-		scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		if (cssUrl != null && cssUrl.length() > 0) {
+			scene.getStylesheets().add(cssUrl);
+		}
 		root.setTop(buildTopPane());
 		root.setCenter(buildCenterPane());
 		root.setBottom(buildBottomPane());
@@ -89,18 +100,18 @@ public class OrderView extends Application {
 		HBox hbox = new HBox();
 		hbox.setSpacing(10);
 		DisplayUtils.applyStyleTo(hbox);
-		infotitle = new Text("");
-		infotitle.setFont(Font.font("Console", FontWeight.LIGHT, 14));
-		infotitle.setFill(Color.YELLOW);
-		infotitle.setTextOrigin(VPos.BOTTOM);
+		hintMsg = new Text("");
+		hintMsg.setFont(Font.font("Console", FontWeight.LIGHT, 14));
+		hintMsg.setFill(Color.YELLOW);
+		hintMsg.setTextOrigin(VPos.BOTTOM);
 		//订单确认
 		Button buttonAck = new Button("委托确认");
 		buttonAck.setOnAction(event -> {
 			OrderBean selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-			infotitle.setText(""); 
+			hintMsg.setText("");
 			if(selectedOrder.getOrdStatus() == ExecType.NONE_YET)
 			   controller.acknowledge(selectedOrder);
-			else infotitle.setText("该笔委托已经确认过,无需再次确认!"); 
+			else hintMsg.setText("该笔委托已经确认过,无需再次确认!");
 		});
 		
 		//订单拒绝
@@ -110,14 +121,14 @@ public class OrderView extends Application {
 			if(IfOrderNotFinish(selectedOrder)){
 				if(selectedOrder.getMsgType().equals("D"))
 				{
-					infotitle.setText("New Order Reject!");
+					hintMsg.setText("New Order Reject!");
 					controller.reject(selectedOrder, "NewOrder reject!");
 				}else if(selectedOrder.getMsgType().equals("F"))
 				{
-					infotitle.setText("Cancel Order Reject!");
+					hintMsg.setText("Cancel Order Reject!");
 					controller.cancelReject(selectedOrder, "CancelOrder Reject!");
 				}else {
-					infotitle.setText("该订单类型不支持发送废单消息！msgType="+selectedOrder.getMsgType());
+					hintMsg.setText("该订单类型不支持发送废单消息！msgType="+selectedOrder.getMsgType());
 				}
 			}
 		});
@@ -144,7 +155,7 @@ public class OrderView extends Application {
 				//这里需要获取这笔原委托的订单数量,累计成交数量
 				OrderBean orgiOrder = blotter.searchOrderByClId(selectedOrder.getOrigClOrdID());
 				if(orgiOrder==null){
-					infotitle.setText("未找到该撤单委托对应的原委托！原委托号"+selectedOrder.getOrigClOrdID());
+					hintMsg.setText("未找到该撤单委托对应的原委托！原委托号"+selectedOrder.getOrigClOrdID());
 				}
 				else {
 					selectedOrder.setOrderQty(orgiOrder.getOrderQty());
@@ -156,24 +167,24 @@ public class OrderView extends Application {
 		//清空所有订单
 		Button buttonCLear = new Button("清空");
 		buttonCLear.setOnAction(event -> {
-			infotitle.setText("");
+			hintMsg.setText("");
 			blotter.ClearAllOrders();
 		});
 		
-		hbox.getChildren().addAll(buttonAck, buttonRejct,buttonExecute,buttonCancelReject,buttonCLear,infotitle);
+		hbox.getChildren().addAll(buttonAck, buttonRejct,buttonExecute,buttonCancelReject,buttonCLear, hintMsg);
 		disableIfNoSelection(buttonAck, buttonRejct,buttonExecute,buttonCancelReject,buttonCLear);
 
 		return hbox;
 	}
 	//检查订单是否为终止状态
 	private boolean IfOrderNotFinish(OrderBean order){
-		infotitle.setText("");
+		hintMsg.setText("");
 		ExecType status =  order.getOrdStatus();
 	    if((status==ExecType.FILLED)|| (status==ExecType.CANCEL_REJECTED)||
 	       (status==ExecType.REJECTED)||(status==ExecType.CANCELED)||
 	       (status==ExecType.DONE_FOR_DAY))
 	    {
-	    	infotitle.setText("该笔委托为"+status+"已经是终止状态!");
+	    	hintMsg.setText("该笔委托为"+status+"已经是终止状态!");
 	    	return false;
 	    }
 	    return true;
