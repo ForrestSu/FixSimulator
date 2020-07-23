@@ -1,5 +1,8 @@
 package com.simulator.main;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,19 +39,23 @@ public class FIXSim extends Application {
 
 	private Application view;
 	private QFJAcceptor acceptor;
-	private static String[] argLists;
-	
-	public FIXSim() throws ConfigError {
-		String CfgFile ="fixsimulator.cfg";
-		if (argLists != null && argLists.length > 0 && argLists[0].endsWith(".cfg")) {
-			CfgFile = argLists[0];
+	private static String CfgFile;
+
+	private static String getCfgFile(String[] args) {
+		String cfg = "fixsimulator.cfg";
+		if (args != null && args.length > 0 && args[0].endsWith(".cfg")) {
+			cfg = args[0];
 		}
+		return cfg;
+	}
+
+	public FIXSim() throws ConfigError, FileNotFoundException {
 		System.out.println("config: " + CfgFile);
+		InputStream cfg = new FileInputStream(CfgFile);
 		// final String cssUrl = getClass().getResource("application.css").toExternalForm();
 		final String cssUrl = null;
-
 		// sending strategy: directly
-		acceptor = new QFJAcceptor(CfgFile, new QFJApplicationIn());
+		acceptor = new QFJAcceptor(cfg, new QFJApplicationIn());
 		
 		List<ExecutionReportObserver> erObservers = Arrays.asList(new QFJApplicationOut());
 		ExecutionReportProcessor erProcessor = new ExecutionReportProcessorImpl(erObservers);
@@ -59,7 +66,7 @@ public class FIXSim extends Application {
 
 	public static void main(String[] args) {
 		// launch JavaFX
-		argLists = args;
+		CfgFile = getCfgFile(args);
 		launch(args);
 	}
 	 private void AddTestData(){

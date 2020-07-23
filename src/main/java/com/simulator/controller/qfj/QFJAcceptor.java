@@ -10,6 +10,8 @@ import quickfix.FileStoreFactory;
 import quickfix.SessionSettings;
 import quickfix.SocketAcceptor;
 
+import java.io.InputStream;
+
 /**
  * This class manages the life cycle of a QFJ acceptor. It requires a .cfg file
  * specifying the QFJ properties, like senderCompID, targetCompID, etc
@@ -23,8 +25,8 @@ public class QFJAcceptor {
 
 	private final SocketAcceptor acceptor;
 
-	public QFJAcceptor(String settingsFileName, Application application) throws ConfigError {
-		final SessionSettings settings = new SessionSettings(settingsFileName);
+	public QFJAcceptor(InputStream cfg, Application application) throws ConfigError {
+		final SessionSettings settings = new SessionSettings(cfg);
 		acceptor = new SocketAcceptor(application, new FileStoreFactory(settings), settings,
 				new DefaultMessageFactory());
 	}
